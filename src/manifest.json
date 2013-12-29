@@ -1,0 +1,25 @@
+{
+	"manifest_version": 2,
+
+	"name": "Cookies cleaner",
+	"description": "Making web surfing more private by saying no to tracker cookies.",
+	"version": "0.1",
+	
+	"icons": {
+		"48": "ico/cookies48.png",
+		"128": "ico/cookies128.png" 
+	},
+	"browser_action": {
+		"default_icon": "ico/cookies48.png"
+	},
+	"background": {
+		"scripts": ["cookieCleaner.js"],
+		"persistent": false
+	},
+	"permissions": [
+		"storage",
+		"browsingData",
+		"tabs", "*://*/*",
+		"cookies", "*://*/*"
+	]
+}
