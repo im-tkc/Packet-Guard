@@ -23,8 +23,11 @@ function cookieCleaner() {
 				listOfAllCookiesDomain.push(domainName);
 			}
 			
-			var whitelistedDomains = localStorage["domainsAllowed"].split(",");
-			var listOfNotWhiteListedCookies = getListOfUnusedCookies(whitelistedDomains, listOfAllCookiesDomain);
+			var listOfNotWhiteListedCookies = listOfAllCookiesDomain;
+			if (localStorage["domainsAllowed"]) {
+				var whitelistedDomains = localStorage["domainsAllowed"].split(",");
+				listOfNotWhiteListedCookies = getListOfUnusedCookies(whitelistedDomains, listOfAllCookiesDomain);
+			}
 			
 			var listOfUnwantedCookies = getListOfUnusedCookies(listOfActiveUrls, listOfNotWhiteListedCookies);
 			removeAllCookies(listOfUnwantedCookies, cookies);
@@ -57,7 +60,7 @@ function removeAllInstance(array, item) {
 function removeAllCookies(listOfUnwantedCookies, cookies) {
 	for (var i = 0; i < cookies.length; i++) {
 		for (var j = 0; j < listOfUnwantedCookies.length; j++) {
-			if (cookies[i].domain == listOfUnwantedCookies[j]) {
+			if (cookies[i].domain.indexOf(listOfUnwantedCookies[j]) != -1) {
 				removeCookie('http', cookies[i]);
 				removeCookie('https', cookies[i]);
 				console.log("Removed " + cookies[i].domain);
