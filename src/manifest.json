@@ -4,6 +4,7 @@
 	"name": "Cookies cleaner",
 	"description": "Making web surfing more private by saying no to tracker cookies.",
 	"version": "0.1",
+	"options_page": "options.html",
 	
 	"icons": {
 		"48": "ico/cookies48.png",
@@ -13,7 +14,7 @@
 		"default_icon": "ico/cookies48.png"
 	},
 	"background": {
-		"scripts": ["cookieCleaner.js"],
+		"scripts": ["js/cookieCleaner.js"],
 		"persistent": false
 	},
 	"permissions": [

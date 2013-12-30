@@ -1,6 +1,9 @@
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 	cookieCleaner();
-	chrome.browsingData.removeLocalStorage({});
+	chrome.browsingData.remove({}, {
+		"localStorage": true,
+		"pluginData": true,
+	});
 });
 
 function cookieCleaner() {

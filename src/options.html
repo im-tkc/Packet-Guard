@@ -1,0 +1,45 @@
+<html>
+<head>
+	<title>Cookie cleaner options</title>
+	<link rel="stylesheet" type="text/css" href="css/options.css">
+</head>
+
+<body>
+<h1><img src="ico/cookies128.png" width="36px" height="36px"></img>&nbsp Cookie cleaner</h1>
+<div class="datagrid">
+	<table>
+		<thead>
+			<tr>
+				<th>Add whitelist domain</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<div class="domainQA">
+						<p class="question">How to add domain to exclusion list?</p>
+						<div class="popup">
+							<p style="font-size: 14px;">Here are is general rule of adding domain to exclusion list: </p>
+							<ul>
+								<li>Add one domain per line</li>
+								<li>If you wish to add http://www.example.com to exclusion list, insert ".example.com" (with quotes removed) to the list</li>
+								<li>Remove empty line</li>
+							</ul>
+						</div>
+					</div>
+					
+					<textarea rows="10" cols="70" id="domainList"></textarea>
+					<br>
+					<button id="save">Save</button>
+					<div id="status"></div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+
+<script src="js/options/jquery-2.0.3.min.js"></script>
+<script src="js/options/toggleBox.js"></script>
+<script src="js/options/saveOptions.js"></script>
+</html>
