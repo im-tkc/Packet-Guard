@@ -26,7 +26,8 @@
 	background-color:#006699; 
 	color:#FFFFFF; 
 	font-size: 15px; 
-	font-weight: bold; border-left: 1px solid #0070A8; 
+	font-weight: bold; 
+	border-left: 1px solid #0070A8; 
 } 
 
 .datagrid table thead th:first-child {

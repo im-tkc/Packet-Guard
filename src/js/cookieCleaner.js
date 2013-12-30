@@ -16,28 +16,35 @@ function cookieCleaner() {
 		chrome.cookies.getAll({}, function(cookies) {
 			var listOfAllCookiesDomain = [];
 			for (var i = 0; i < cookies.length; i++) {
-				listOfAllCookiesDomain.push(cookies[i].domain);
+				var domainName = cookies[i].domain.charAt(0) == '.' 
+					? cookies[i].domain.substring(1, cookies[i].length)
+					: cookies[i].domain;
+					
+				listOfAllCookiesDomain.push(domainName);
 			}
 			
-			var listOfUnusedCookies = getListOfUnusedCookies(listOfActiveUrls, listOfAllCookiesDomain);			
-			removeAllCookies(listOfUnusedCookies, cookies);
+			var whitelistedDomains = localStorage["domainsAllowed"].split(",");
+			var listOfNotWhiteListedCookies = getListOfUnusedCookies(whitelistedDomains, listOfAllCookiesDomain);
+			
+			var listOfUnwantedCookies = getListOfUnusedCookies(listOfActiveUrls, listOfNotWhiteListedCookies);
+			removeAllCookies(listOfUnwantedCookies, cookies);
 		});
 	});
 }
 
-function getListOfUnusedCookies(listOfActiveUrls, listOfAllCookiesDomain) {
-	var listOfUnusedCookies = listOfAllCookiesDomain;
+function getListOfUnusedCookies(listOfCookiesToIgnore, listOfAllCookiesDomain) {
+	var listOfUnwantedCookies = listOfAllCookiesDomain;
 	
 	for (var i = 0; i < listOfAllCookiesDomain.length; i++) {
-		for (var j = 0; j < listOfActiveUrls.length; j++) {
-			if (listOfActiveUrls[j] && listOfAllCookiesDomain[i]) {
-				if (listOfActiveUrls[j].indexOf(listOfAllCookiesDomain[i]) != -1) {					
-					removeAllInstance(listOfUnusedCookies, listOfAllCookiesDomain[i])
-				} 
+		for (var j = 0; j < listOfCookiesToIgnore.length; j++) {
+			if (listOfCookiesToIgnore[j] && listOfAllCookiesDomain[i]) {
+				if (listOfCookiesToIgnore[j].indexOf(listOfAllCookiesDomain[i]) != -1) {
+					removeAllInstance(listOfUnwantedCookies, listOfAllCookiesDomain[i]);
+				}
 			}
 		}
 	}
-	return listOfUnusedCookies;
+	return listOfUnwantedCookies;
 }
 
 function removeAllInstance(array, item) {
@@ -47,10 +54,10 @@ function removeAllInstance(array, item) {
    }
 }
 
-function removeAllCookies(listOfUnusedCookies, cookies) {
+function removeAllCookies(listOfUnwantedCookies, cookies) {
 	for (var i = 0; i < cookies.length; i++) {
-		for (var j = 0; j < listOfUnusedCookies.length; j++) {
-			if (cookies[i].domain == listOfUnusedCookies[j]) {
+		for (var j = 0; j < listOfUnwantedCookies.length; j++) {
+			if (cookies[i].domain == listOfUnwantedCookies[j]) {
 				removeCookie('http', cookies[i]);
 				removeCookie('https', cookies[i]);
 				console.log("Removed " + cookies[i].domain);

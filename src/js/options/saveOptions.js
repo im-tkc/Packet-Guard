@@ -21,7 +21,6 @@ function restore_options() {
 	domainsAllowed = domainsAllowed.replace(/,/g, "\n");
 	var textArea = document.getElementById(domainListField);
 	textArea.value = domainsAllowed;
-	
 }
 
 domainListField = "domainList";
