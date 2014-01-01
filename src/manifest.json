@@ -11,7 +11,8 @@
 		"128": "ico/cookies128.png" 
 	},
 	"browser_action": {
-		"default_icon": "ico/cookies48.png"
+		"default_icon": "ico/cookies48.png",
+		"default_popup": "popup.html"
 	},
 	"background": {
 		"scripts": ["js/cookieCleaner.js"],

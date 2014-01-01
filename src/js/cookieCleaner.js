@@ -1,8 +1,11 @@
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 	cookieCleaner();
 	chrome.browsingData.remove({}, {
+		"fileSystems": true,
+		"indexedDB": true,
 		"localStorage": true,
 		"pluginData": true,
+		"webSQL": true
 	});
 });
 
@@ -51,10 +54,10 @@ function getListOfUnusedCookies(listOfCookiesToIgnore, listOfAllCookiesDomain) {
 }
 
 function removeAllInstance(array, item) {
-   var i;
-   while((i = array.indexOf(item)) !== -1) {
-     array.splice(i, 1);
-   }
+	var i;
+	while((i = array.indexOf(item)) !== -1) {
+		array.splice(i, 1);
+	}
 }
 
 function removeAllCookies(listOfUnwantedCookies, cookies) {

@@ -1,0 +1,65 @@
+var removeToListButtonId = "removeToList";
+var addToListButtonId = "addToList";
+var urlToExclude = "";
+
+chrome.tabs.query({active: true}, function(tabs) {
+	var activeUrl = tabs[0].url;
+	urlToExclude = activeUrl.replace(/^.*:\/\//g, '').split('/')[0];
+	var urlHTMLTag = document.getElementById("activeUrl");
+	urlHTMLTag.innerHTML = urlToExclude;
+	
+	var domainsAllowed = getListOfAllowedDomains();
+	if(domainsAllowed.indexOf(urlToExclude) != -1) {
+		showElement(removeToListButtonId);
+	} else {
+		showElement(addToListButtonId);
+	}
+});
+
+document.querySelector('#'+ addToListButtonId).addEventListener('click', addToList);
+document.querySelector('#'+ removeToListButtonId).addEventListener('click', removeToList);
+document.querySelector('#clearAllCookies').addEventListener('click', clearAllCookies);
+
+function showElement(id) {
+	var element = document.getElementById(id);
+	element.style.display = "block";
+}
+
+function addToList() {
+	var domainsAllowed = getListOfAllowedDomains();
+	domainsAllowed.push(urlToExclude);
+	setListOfAllowedDomains(domainsAllowed);
+	hideAndShowButton(addToListButtonId, removeToListButtonId);
+}
+
+function removeToList() {
+	var domainsAllowed = getListOfAllowedDomains();
+	removeAllInstance(domainsAllowed, urlToExclude);
+	setListOfAllowedDomains(domainsAllowed);
+	hideAndShowButton(removeToListButtonId, addToListButtonId);
+}
+
+function removeAllInstance(array, item) {
+	var i;
+	while((i = array.indexOf(item)) !== -1) {
+		array.splice(i, 1);
+	}
+}
+
+function getListOfAllowedDomains() {
+	return localStorage["domainsAllowed"].split(",");
+}
+
+function setListOfAllowedDomains(domainsAllowed) {
+	localStorage["domainsAllowed"] = domainsAllowed;
+}
+
+function hideAndShowButton(elementIdToHide, elementIdToShow) {
+	$("#" + elementIdToHide).hide("slow", function() {
+		$("#" + elementIdToShow).show("slow");
+	});
+}
+
+function clearAllCookies() {
+	chrome.browsingData.removeCookies({});
+}
