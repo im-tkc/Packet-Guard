@@ -1,6 +1,8 @@
 function save_options() {
 	var textArea = document.getElementById(domainListField);
 	var domainsAllowed = textArea.value.split("\n");
+	
+	domainsAllowed = domainsAllowed.filter(function(e){return e});
 	localStorage[domainsLocalStorageName] = domainsAllowed;
 
 	// Update status to let user know options were saved.

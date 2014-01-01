@@ -1,6 +1,7 @@
 var removeToListButtonId = "removeToList";
 var addToListButtonId = "addToList";
 var urlToExclude = "";
+var domainsLocalStorageName = "domainsAllowed";
 
 chrome.tabs.query({active: true}, function(tabs) {
 	var activeUrl = tabs[0].url;
@@ -9,7 +10,7 @@ chrome.tabs.query({active: true}, function(tabs) {
 	urlHTMLTag.innerHTML = urlToExclude;
 	
 	var domainsAllowed = getListOfAllowedDomains();
-	if(domainsAllowed.indexOf(urlToExclude) != -1) {
+	if(domainsAllowed && domainsAllowed.indexOf(urlToExclude) != -1) {
 		showElement(removeToListButtonId);
 	} else {
 		showElement(addToListButtonId);
@@ -47,11 +48,15 @@ function removeAllInstance(array, item) {
 }
 
 function getListOfAllowedDomains() {
-	return localStorage["domainsAllowed"].split(",");
+	var domainsAllowed = localStorage[domainsLocalStorageName] 
+		? localStorage[domainsLocalStorageName].split(",")
+		: [];
+	return domainsAllowed;
 }
 
 function setListOfAllowedDomains(domainsAllowed) {
-	localStorage["domainsAllowed"] = domainsAllowed;
+	sanitizedDomainsAllowed = domainsAllowed.filter(function(e){return e});
+	localStorage[domainsLocalStorageName] = sanitizedDomainsAllowed;
 }
 
 function hideAndShowButton(elementIdToHide, elementIdToShow) {
