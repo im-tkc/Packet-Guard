@@ -38,14 +38,16 @@ function cookieCleaner() {
 	});
 }
 
-function getListOfUnusedCookies(listOfCookiesToIgnore, listOfAllCookiesDomain) {
+function getListOfUnusedCookies(listOfURLToIgnore, listOfAllCookiesDomain) {
 	var listOfUnwantedCookies = listOfAllCookiesDomain;
 	
+	loopNewCookieDomain:
 	for (var i = 0; i < listOfAllCookiesDomain.length; i++) {
-		for (var j = 0; j < listOfCookiesToIgnore.length; j++) {
-			if (listOfCookiesToIgnore[j] && listOfAllCookiesDomain[i]) {
-				if (listOfCookiesToIgnore[j].indexOf(listOfAllCookiesDomain[i]) != -1) {
-					removeAllInstance(listOfUnwantedCookies, listOfAllCookiesDomain[i]);
+		for (var j = 0; j < listOfURLToIgnore.length; j++) {
+			if (listOfURLToIgnore[j] && listOfAllCookiesDomain[i]) {
+				if (listOfURLToIgnore[j].indexOf(listOfAllCookiesDomain[i]) != -1) {
+					listOfUnwantedCookies = removeAllInstance(listOfUnwantedCookies, listOfAllCookiesDomain[i]);
+					continue loopNewCookieDomain;
 				}
 			}
 		}
@@ -53,11 +55,12 @@ function getListOfUnusedCookies(listOfCookiesToIgnore, listOfAllCookiesDomain) {
 	return listOfUnwantedCookies;
 }
 
-function removeAllInstance(array, item) {
-	var i;
-	while((i = array.indexOf(item)) !== -1) {
-		array.splice(i, 1);
-	}
+function removeAllInstance(array, itemToRemove) {
+	var filteredArray = array.filter(function(item){
+		return typeof item == 'string' && item.indexOf(itemToRemove) == -1;
+	});
+	
+	return filteredArray;
 }
 
 function removeAllCookies(listOfUnwantedCookies, cookies) {
