@@ -67,6 +67,8 @@ function hideAndShowButton(elementIdToHide, elementIdToShow) {
 
 function clearAllCookies() {
 	chrome.browsingData.removeCookies({});
+	removeSiteData(); //call a function from cookieCleaner.js
+	
 	var checkmarkHTMLTag = document.getElementById("checkmark");
 	checkmarkHTMLTag.innerHTML = "&#10004;";
 	setTimeout(function() {

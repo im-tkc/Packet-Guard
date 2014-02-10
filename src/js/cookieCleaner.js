@@ -1,12 +1,6 @@
 chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 	cookieCleaner();
-	chrome.browsingData.remove({}, {
-		"fileSystems": true,
-		"indexedDB": true,
-		"localStorage": true,
-		"pluginData": true,
-		"webSQL": true
-	});
+	removeSiteData();
 });
 
 function cookieCleaner() {
@@ -78,4 +72,15 @@ function removeAllCookies(listOfUnwantedCookies, cookies) {
 function removeCookie(prefix, cookie) {
 	var link = prefix + '://' + cookie.domain + cookie.path;
 	chrome.cookies.remove({url: link, name: cookie.name});
+}
+
+function removeSiteData() {
+	chrome.browsingData.remove({}, {
+		"appcache": true,
+		"fileSystems": true,
+		"indexedDB": true,
+		"localStorage": true,
+		"pluginData": true,
+		"webSQL": true
+	});
 }
