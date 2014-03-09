@@ -3,7 +3,7 @@
 
 	"name": "Cookies cleaner",
 	"description": "Making web surfing more private by saying no to tracker cookies.",
-	"version": "0.1",
+	"version": "0.3",
 	"options_page": "options.html",
 	
 	"icons": {
@@ -15,12 +15,19 @@
 		"default_popup": "popup.html"
 	},
 	"background": {
-		"scripts": ["js/cookieCleaner.js"],
-		"persistent": false
+		"scripts": [
+			"js/firstRun.js", 
+			"js/cookieCleaner.js", 
+			"js/httpReferer.js", 
+			"js/cleanCache.js"
+		],
+		"persistent": true
 	},
 	"permissions": [
 		"browsingData",
 		"tabs", "*://*/*",
-		"cookies", "*://*/*"
+		"cookies", "*://*/*",
+		"alarms",
+        "webRequest", "webRequestBlocking", "*://*/*"
 	]
 }

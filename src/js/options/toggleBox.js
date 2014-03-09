@@ -1,3 +1,4 @@
+//Deprecated
 $(function() {
     $('div.domainQA').each(function() {
         var trigger = $('p.question', this);

@@ -1,65 +1,71 @@
-/* For options table */
-.datagrid table {
-	border-collapse: collapse; 
-	text-align: left; 
-	width: 100%; 
-} 
-
-.datagrid {
-	font: normal 12px/150% Arial, Helvetica, sans-serif;
-	background: #fff; 
-	overflow: hidden;
-	border: 1px solid #006699; 
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px; 
-	border-radius: 3px; 
+body{
+	background: #AECEF2;
+	font-family: "Myriad Pro", Myriad, "Liberation Sans", "Nimbus Sans L", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.datagrid table td, .datagrid table th {
-	padding: 3px 10px; 
-}
-
-.datagrid table thead th {
-	background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F) );
-	background:-moz-linear-gradient( center top, #006699 5%, #00557F 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');
-	background-color:#006699; 
-	color:#FFFFFF; 
-	font-size: 15px; 
-	font-weight: bold; 
-	border-left: 1px solid #0070A8; 
-} 
-
-.datagrid table thead th:first-child {
-	border: none;
-}
-
-.datagrid table tbody td {
-	background: #E1EEf4; 
-	color: #00557F; 
-}
-
-.datagrid table tbody .alt td { 
-	color: #00557F;
-	border-left: 1px solid #E1EEF4;
-	font-size: 12px;
-	font-weight: normal; 
-}
-
-.datagrid table tbody td:first-child {
-	border-left: none;
-}
-
-.datagrid table tbody tr:last-child td {
-	border-bottom: none; 
-}
-
-/* For popup */
-.popup {
-	display: none;
+h1 {
+	color: #CC5500;
 }
 
 /* For text inside the table */
 ul li {
 	font-size: 14px;
+}
+
+input.numeric {
+	width: 5em;
+}
+
+/*For tab configuration*/
+.tabs {
+	position: relative;
+	min-height: 400px;
+	min-width: 650px;
+	height: 87%;
+	clear: both;
+	margin: 25px 0;
+}
+
+.tab {
+	float: left;
+}
+
+.tab label {
+	background: #6FA8E8; 
+	padding: 10px; 
+	border: 1px solid #1779E8; 
+	margin-left: -1px; 
+	position: relative;
+	left: 1px; 
+}
+
+.tab [type=radio] {
+	display: none;   
+}
+
+.content {
+	position: absolute;
+	top: 28px;
+	left: 0;
+	background: white;
+	right: 0;
+	bottom: 0;
+	padding: 0px 20px;
+	border: 1px solid #1779E8;
+	clear: both;
+}
+
+[type=radio]:checked ~ label {
+	background: white;
+	border-bottom: 1px solid white;
+	z-index: 2;
+}
+
+[type=radio]:checked ~ label ~ .content {
+	z-index: 1;
+}
+
+/* For popup */
+.popup {
+	display: none;
 }
