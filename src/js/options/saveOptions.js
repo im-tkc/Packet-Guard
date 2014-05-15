@@ -3,11 +3,6 @@ clearCacheField = "autoClearCacheField";
 clearCacheOnExit = "clearCacheOnExitOption";
 httpRefererOptions = "httpRefererOptions";
 
-domainsLocalStorageName = "domainsAllowed";
-clearCacheMinsStorageName = "clearCacheMins";
-clearCacheOnExitStorageName = "clearCacheOnExit";
-httpRefererStorageName = "httpReferer";
-
 main();
 
 function main() {
@@ -19,7 +14,7 @@ function main() {
 }
 
 function restoreWhitelist() {
-	var domainsAllowed = localStorage[domainsLocalStorageName];
+	var domainsAllowed = resources.getDomainsAllowed();
 	if (domainsAllowed) {	
 		domainsAllowed = domainsAllowed.replace(/,/g, "\n");
 		setValueById(domainListField, domainsAllowed);
@@ -30,21 +25,21 @@ function saveWhitelist() {
 	var domainsAllowed = getValueById(domainListField).split("\n");
 	
 	domainsAllowed = domainsAllowed.filter(function(e){return e});
-	localStorage[domainsLocalStorageName] = domainsAllowed;
+	resources.setDomainsAllowed(domainsAllowed);
 
 	visualFeedback("statusWhitelist");
 }
 
 function restorePrivacy() {
-	var clearCacheMins = localStorage[clearCacheMinsStorageName];
-	var httpReferer = localStorage[httpRefererStorageName];
+	var clearCacheMins = resources.getClearCacheMins();
+	var httpReferer = resources.getHttpReferer();
 
 	if (clearCacheMins) {
 		setValueById(clearCacheField, clearCacheMins);
 	}
 	
 	if (clearCacheOnExit) {
-		setIsChecked(clearCacheOnExit, localStorage[clearCacheOnExitStorageName]);
+		setIsChecked(clearCacheOnExit, resources.getClearCacheOnExit());
 	}
 	
 	if (httpReferer) {
@@ -53,11 +48,11 @@ function restorePrivacy() {
 }
 
 function savePrivacy() {
-	localStorage[httpRefererStorageName] = getValueById(httpRefererOptions);
-	localStorage[clearCacheMinsStorageName] = getValueById(clearCacheField);
-	localStorage[clearCacheOnExitStorageName] = getIsChecked(clearCacheOnExit);
+	resources.setHttpReferer(getValueById(httpRefererOptions));
+	resources.setClearCacheMins(getValueById(clearCacheField));
+	resources.setClearCacheOnExit(getIsChecked(clearCacheOnExit));
 
-	cacheCleaner.createTimer(parseInt(localStorage[clearCacheMinsStorageName]));
+	cacheCleaner.createTimer(parseInt(resources.getClearCacheMins()));
 	visualFeedback("statusPrivacy");
 }
 
@@ -86,9 +81,4 @@ function visualFeedback(elementId) {
 	setTimeout(function() {
 		status.innerHTML = "";
 	}, 750);
-}
-
-
-function getClearCacheMinsStorage() {
-	return localStorage[clearCacheMinsStorageName];
 }

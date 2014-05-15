@@ -1,20 +1,23 @@
-function CacheCleaner() {
-	this.cacheAlarmName = "Clear cache";
-}
+function CacheCleaner() {}
 
 cacheCleaner = CacheCleaner.prototype;
+cacheCleaner.getCacheAlarmName = function() {
+	return "Clear cache";
+}
+
 cacheCleaner.bindListener = function() {
 	cacheCleanerPointer = this;
+	this.createTimer;
 	
 	chrome.alarms.onAlarm.addListener(function(alarm) {
-		if (alarm.name == cacheCleanerPointer.cacheAlarmName) {
+		if (alarm.name == cacheCleanerPointer.getCacheAlarmName()) {
 			cacheCleanerPointer.removeCache();
 		}
 	});
-
-	chrome.windows.onRemoved.addListener(function () {
+	
+	if (resources.getClearCacheOnExit() == "true") {
 		cacheCleanerPointer.removeCache();
-	});
+	}
 }
 
 cacheCleaner.removeCache = function() {
@@ -25,11 +28,8 @@ cacheCleaner.removeCache = function() {
 
 cacheCleaner.createTimer = function(clearCacheMins) {
 	if (clearCacheMins != 0) {
-		chrome.alarms.create(this.cacheAlarmName, {periodInMinutes: clearCacheMins});
+		chrome.alarms.create(this.getCacheAlarmName(), {periodInMinutes: clearCacheMins});
 	} else {
-		chrome.alarms.clear(this.cacheAlarmName);
+		chrome.alarms.clear(this.getCacheAlarmName());
 	}
 }
-
-cacheCleaner = new CacheCleaner();
-cacheCleaner.bindListener();

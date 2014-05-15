@@ -1,9 +1,18 @@
-chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
-	cookieCleaner();
-	removeSiteData();
-});
+function CookieCleaner() {}
 
-function cookieCleaner() {
+CCleaner = CookieCleaner.prototype;
+CCleaner.bindListener = function() {
+	var functionPointer = this;
+	
+	chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
+		functionPointer.removeUnwantedCookies();
+		functionPointer.removeSiteData();
+	});
+}
+
+CCleaner.removeUnwantedCookies = function() {
+	var functionPointer = this;
+	
 	chrome.tabs.query({}, function(tabs) {
 		var listOfActiveUrls = [];
 		for (var i = 0; i < tabs.length; i++) {
@@ -21,18 +30,18 @@ function cookieCleaner() {
 			}
 			
 			var listOfNotWhiteListedCookies = listOfAllCookiesDomain;
-			if (localStorage["domainsAllowed"]) {
-				var whitelistedDomains = localStorage["domainsAllowed"].split(",");
-				listOfNotWhiteListedCookies = getListOfUnusedCookies(whitelistedDomains, listOfAllCookiesDomain);
+			if (resources.getDomainsAllowed()) {
+				var whitelistedDomains = resources.getDomainsAllowed().split(",");
+				listOfNotWhiteListedCookies = functionPointer.getListOfUnusedCookies(whitelistedDomains, listOfAllCookiesDomain);
 			}
 			
-			var listOfUnwantedCookies = getListOfUnusedCookies(listOfActiveUrls, listOfNotWhiteListedCookies);
-			removeAllCookies(listOfUnwantedCookies, cookies);
+			var listOfUnwantedCookies = functionPointer.getListOfUnusedCookies(listOfActiveUrls, listOfNotWhiteListedCookies);
+			functionPointer.removeAllCookies(listOfUnwantedCookies, cookies);
 		});
 	});
 }
 
-function getListOfUnusedCookies(listOfURLToIgnore, listOfAllCookiesDomain) {
+CCleaner.getListOfUnusedCookies = function(listOfURLToIgnore, listOfAllCookiesDomain) {
 	var listOfUnwantedCookies = listOfAllCookiesDomain;
 	
 	loopNewCookieDomain:
@@ -40,7 +49,7 @@ function getListOfUnusedCookies(listOfURLToIgnore, listOfAllCookiesDomain) {
 		for (var j = 0; j < listOfURLToIgnore.length; j++) {
 			if (listOfURLToIgnore[j] && listOfAllCookiesDomain[i]) {
 				if (listOfURLToIgnore[j].indexOf(listOfAllCookiesDomain[i]) != -1) {
-					listOfUnwantedCookies = removeAllInstance(listOfUnwantedCookies, listOfAllCookiesDomain[i]);
+					listOfUnwantedCookies = this.removeAllInstance(listOfUnwantedCookies, listOfAllCookiesDomain[i]);
 					continue loopNewCookieDomain;
 				}
 			}
@@ -49,7 +58,7 @@ function getListOfUnusedCookies(listOfURLToIgnore, listOfAllCookiesDomain) {
 	return listOfUnwantedCookies;
 }
 
-function removeAllInstance(array, itemToRemove) {
+CCleaner.removeAllInstance = function(array, itemToRemove) {
 	var filteredArray = array.filter(function(item){
 		return typeof item == 'string' && item.indexOf(itemToRemove) == -1;
 	});
@@ -57,24 +66,24 @@ function removeAllInstance(array, itemToRemove) {
 	return filteredArray;
 }
 
-function removeAllCookies(listOfUnwantedCookies, cookies) {
+CCleaner.removeAllCookies = function(listOfUnwantedCookies, cookies) {
 	for (var i = 0; i < cookies.length; i++) {
 		for (var j = 0; j < listOfUnwantedCookies.length; j++) {
 			if (cookies[i].domain.indexOf(listOfUnwantedCookies[j]) != -1) {
-				removeCookie('http', cookies[i]);
-				removeCookie('https', cookies[i]);
+				this.removeCookie('http', cookies[i]);
+				this.removeCookie('https', cookies[i]);
 				console.log("Removed " + cookies[i].domain);
 			}
 		}
 	}
 }
 
-function removeCookie(prefix, cookie) {
+CCleaner.removeCookie = function(prefix, cookie) {
 	var link = prefix + '://' + cookie.domain + cookie.path;
 	chrome.cookies.remove({url: link, name: cookie.name});
 }
 
-function removeSiteData() {
+CCleaner.removeSiteData = function() {
 	chrome.browsingData.remove({}, {
 		"appcache": true,
 		"fileSystems": true,

@@ -1,63 +1,64 @@
 <html>
 <head>
-	<title>Cookie cleaner options</title>
-	<link rel="stylesheet" type="text/css" href="css/options.css"/>	
+    <title>Cookie cleaner options</title>
+    <link rel="stylesheet" type="text/css" href="css/options.css"/>    
 </head>
 
 <body>
-	<h1><img src="ico/cookies128.png" width="36px" height="36px"></img>&nbsp Cookie cleaner</h1>
-	<div class="tabs">
-		<div class="tab">
-		   <input type="radio" id="tab-1" name="tab-group-1" checked>
-		   <label for="tab-1">Privacy</label>
-		   
-			<div class="content">
-				<p>
-					Clear cache after <input id="autoClearCacheField" class="numeric" type="text" name="mins" min="0"/> 
-					minute(s). (Psst! 0 to disable it)
-				</p>
-				<p>
-					<input type="checkbox" id="clearCacheOnExitOption"> Clear cache on exit 
-				</p>
-				<p>
-					Select the type of HTTP Referer to be sent:
-					<select id="httpRefererOptions">
-						<option value="suppress">Suppress HTTP Referer (more private)</option>
-						<option value="domainOnly">Send domain information only</option>
-						<option value="normal">Leave it as it is (not recommended)</option>
-					</select>
-				</p>
-				
-				<button id="savePrivacy">Save</button>
-				<div id="statusPrivacy"></div>
-			</div> 
-		</div>
-	
-		<div class="tab">
-		   <input type="radio" id="tab-2" name="tab-group-1">
-		   <label for="tab-2">Manage exceptions</label>
-		   
-			<div class="content">
-				<p class="question">How to add URL to exclusion list?</p>
-				<p style="font-size: 14px;">Here are the general rules when adding URL(s) to exclusion list: </p>
-				<ul>
-					<li>Add one URL per line</li>
-					<li>
-						Insert "www.example.com" (with quotes removed) to the list 
-						if you wish to add http://www.example.com to exclusion list.
-					</li>
-				</ul>
+    <h1><img src="ico/cookies128.png" width="36px" height="36px"></img>&nbsp Cookie cleaner</h1>
+    <div class="tabs">
+        <div class="tab">
+           <input type="radio" id="tab-1" name="tab-group-1" checked>
+           <label for="tab-1">Privacy</label>
+           
+            <div class="content">
+                <p>
+                    Clear cache after <input id="autoClearCacheField" class="numeric" type="text" name="mins" min="0"/> 
+                    minute(s). (Psst! 0 to disable it)
+                </p>
+                <p>
+                    <input type="checkbox" id="clearCacheOnExitOption"> Clear cache on exit 
+                </p>
+                <p>
+                    Select the type of HTTP referer to be sent:
+                    <select id="httpRefererOptions">
+                        <option value="suppress">Suppress HTTP Referer (more private)</option>
+                        <option value="domainOnly">Send domain information only</option>
+                        <option value="normal">Leave it as it is (not recommended)</option>
+                    </select>
+                </p>
+                
+                <button id="savePrivacy">Save</button>
+                <div id="statusPrivacy"></div>
+            </div> 
+        </div>
+    
+        <div class="tab">
+           <input type="radio" id="tab-2" name="tab-group-1">
+           <label for="tab-2">Manage exceptions</label>
+           
+            <div class="content">
+                <p class="question">How to add URL to exclusion list?</p>
+                <p style="font-size: 14px;">Here are the general rules when adding URL(s) to exclusion list: </p>
+                <ul>
+                    <li>Add one URL per line</li>
+                    <li>
+                        Insert "www.example.com" (with quotes removed) to the list 
+                        if you wish to add http://www.example.com to exclusion list.
+                    </li>
+                </ul>
 
-				<textarea rows="10" cols="70" id="domainList"></textarea>
-				<br/>
-				<button id="saveWhitelist">Save</button>
-				<div id="statusWhitelist"></div>
-			</div> 
-		</div>
-	</div>
+                <textarea rows="10" cols="70" id="domainList" style="resize:none;"></textarea>
+                <br/>
+                <button id="saveWhitelist">Save</button>
+                <div id="statusWhitelist"></div>
+            </div> 
+        </div>
+    </div>
 </body>
 
 <script src="js/jquery-2.0.3.min.js"></script>
+<script src="js/resources.js"></script>
 <script src="js/options/saveOptions.js"></script>
 
 <script src="js/cleanCache.js"></script>

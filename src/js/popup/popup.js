@@ -1,7 +1,6 @@
 var removeToListButtonId = "removeToList";
 var addToListButtonId = "addToList";
 var urlToExclude = "";
-var domainsLocalStorageName = "domainsAllowed";
 
 chrome.tabs.query({active: true}, function(tabs) {
 	var activeUrl = tabs[0].url;
@@ -48,15 +47,15 @@ function removeAllInstance(array, item) {
 }
 
 function getListOfAllowedDomains() {
-	var domainsAllowed = localStorage[domainsLocalStorageName] 
-		? localStorage[domainsLocalStorageName].split(",")
+	var domainsAllowed = resources.getDomainsAllowed()
+		? resources.getDomainsAllowed().split(",")
 		: [];
 	return domainsAllowed;
 }
 
 function setListOfAllowedDomains(domainsAllowed) {
 	sanitizedDomainsAllowed = domainsAllowed.filter(function(e){return e});
-	localStorage[domainsLocalStorageName] = sanitizedDomainsAllowed;
+	resources.setDomainsAllowed(sanitizedDomainsAllowed);
 }
 
 function hideAndShowButton(elementIdToHide, elementIdToShow) {
@@ -67,7 +66,9 @@ function hideAndShowButton(elementIdToHide, elementIdToShow) {
 
 function clearAllCookies() {
 	chrome.browsingData.removeCookies({});
-	removeSiteData(); //call a function from cookieCleaner.js
+	
+	var cookieCleaner = new CookieCleaner();
+	cookieCleaner.removeSiteData();
 	
 	var checkmarkHTMLTag = document.getElementById("checkmark");
 	checkmarkHTMLTag.innerHTML = "&#10004;";

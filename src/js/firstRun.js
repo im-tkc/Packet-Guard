@@ -1,6 +1,7 @@
 chrome.runtime.onInstalled.addListener(function(details) {
 	if(details.reason == "install") {
-		localStorage["httpReferer"] = "suppress";
-		localStorage["clearCacheMins"] = 120;
+		resources.setHttpReferer("suppress");
+		resources.setClearCacheMins(120);
+		resources.setClearCacheOnExit("false");
 	}
 });

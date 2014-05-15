@@ -1,6 +1,4 @@
-function HTTP_Referer() {
-	this.httpRefererStorageName = "httpReferer";
-}
+function HTTP_Referer() {}
 
 HReferer=HTTP_Referer.prototype;
 HReferer.bindListener = function () {
@@ -19,11 +17,11 @@ HReferer.bindListener = function () {
 
 HReferer.editBasedOnRefererPref = function(requestHeader, pos) {
 	var newHeader = requestHeader;
-	var httpReferer = localStorage[this.httpRefererStorageName];
+	var httpRefererOptions = resources.getHttpReferer();
 	
-	switch (httpReferer) {
+	switch (httpRefererOptions) {
 		case "suppress":
-			newHeader[pos].value = "";
+			newHeader.splice(pos, 1);
 			break;
 		case "domainOnly":
 			newHeader = newHeader[pos].replace(/^.*:\/\//g, '').split('/')[0];
@@ -34,6 +32,3 @@ HReferer.editBasedOnRefererPref = function(requestHeader, pos) {
 	
 	return newHeader;
 }
-
-httpReferer = new HTTP_Referer();
-httpReferer.bindListener();

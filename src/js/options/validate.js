@@ -1,8 +1,8 @@
 $(function() {
-    $('input.numeric').each(function() {
+	$('input.numeric').each(function() {
 		$(this).numberOnly();
-		$(this).getOriginalValueIfInvalid(getClearCacheMinsStorage());
-    });
+		$(this).getOriginalValueIfInvalid(resources.getClearCacheMins());
+	});
 });
 
 $.fn.numberOnly = function() {

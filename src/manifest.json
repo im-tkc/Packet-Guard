@@ -1,33 +1,35 @@
 {
-	"manifest_version": 2,
+    "manifest_version": 2,
 
-	"name": "Cookies cleaner",
-	"description": "Making web surfing more private by saying no to tracker cookies.",
-	"version": "0.3",
-	"options_page": "options.html",
-	
-	"icons": {
-		"48": "ico/cookies48.png",
-		"128": "ico/cookies128.png" 
-	},
-	"browser_action": {
-		"default_icon": "ico/cookies48.png",
-		"default_popup": "popup.html"
-	},
-	"background": {
-		"scripts": [
-			"js/firstRun.js", 
-			"js/cookieCleaner.js", 
-			"js/httpReferer.js", 
-			"js/cleanCache.js"
-		],
-		"persistent": true
-	},
-	"permissions": [
-		"browsingData",
-		"tabs", "*://*/*",
-		"cookies", "*://*/*",
-		"alarms",
+    "name": "Cookies cleaner",
+    "description": "Making web surfing more private by saying no to tracker cookies.",
+    "version": "0.3",
+    "options_page": "options.html",
+    
+    "icons": {
+        "48": "ico/cookies48.png",
+        "128": "ico/cookies128.png" 
+    },
+    "browser_action": {
+        "default_icon": "ico/cookies48.png",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": [
+            "js/resources.js",
+            "js/firstRun.js", 
+            "js/cookieCleaner.js",
+            "js/cleanCache.js",
+            "js/httpReferer.js",
+            "js/main.js"
+        ],
+        "persistent": true
+    },
+    "permissions": [
+        "browsingData",
+        "tabs", "*://*/*",
+        "cookies", "*://*/*",
+        "alarms",
         "webRequest", "webRequestBlocking", "*://*/*"
-	]
+    ]
 }
