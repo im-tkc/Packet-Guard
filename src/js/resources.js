@@ -7,33 +7,33 @@ function Resource() {}
 resources = Resource.prototype;
 
 resources.getDomainsAllowed = function() {
-	return localStorage[domainsLocalStorageName];
+    return localStorage[domainsLocalStorageName];
 }
 
 resources.setDomainsAllowed = function(value) {
-	localStorage[domainsLocalStorageName] = value;
+    localStorage[domainsLocalStorageName] = value;
 }
 
 resources.getClearCacheMins = function() {
-	return localStorage[clearCacheMinsStorageName];
+    return localStorage[clearCacheMinsStorageName];
 }
 
 resources.setClearCacheMins = function(value) {
-	localStorage[clearCacheMinsStorageName] = value;
+    localStorage[clearCacheMinsStorageName] = value;
 }
 
 resources.getClearCacheOnExit = function() {
-	return localStorage[clearCacheOnExitStorageName];
+    return localStorage[clearCacheOnExitStorageName];
 }
 
 resources.setClearCacheOnExit = function(value) {
-	localStorage[clearCacheOnExitStorageName] = value;
+    localStorage[clearCacheOnExitStorageName] = value;
 }
 
 resources.getHttpReferer = function() {
-	return localStorage[httpRefererStorageName];
+    return localStorage[httpRefererStorageName];
 }
 
 resources.setHttpReferer = function(value) {
-	localStorage[httpRefererStorageName] = value;
+    localStorage[httpRefererStorageName] = value;
 }
