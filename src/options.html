@@ -28,7 +28,7 @@
                     </select>
                 </p>
                 
-                <button id="savePrivacy">Save</button>
+                <button id="savePrivacyButton">Save</button>
                 <div id="statusPrivacy"></div>
             </div> 
         </div>
@@ -50,7 +50,10 @@
 
                 <textarea rows="10" cols="70" id="domainList" style="resize:none;"></textarea>
                 <br/>
-                <button id="saveWhitelist">Save</button>
+                <br/>
+                <textarea rows="50" cols="70" id="rulesSet" style="resize:none;display: table-row;"></textarea>
+                <br/>
+                <button id="saveWhitelistButton">Save</button>
                 <div id="statusWhitelist"></div>
             </div> 
         </div>
@@ -59,8 +62,9 @@
 
 <script src="js/jquery-2.0.3.min.js"></script>
 <script src="js/resources.js"></script>
+<script src="js/strings.js"></script>
+<script src="js/options/validate.js"></script>
 <script src="js/options/saveOptions.js"></script>
 
 <script src="js/cleanCache.js"></script>
-<script src="js/options/validate.js"></script>
 </html>

@@ -2,15 +2,19 @@ domainListField = "domainList";
 clearCacheField = "autoClearCacheField";
 clearCacheOnExit = "clearCacheOnExitOption";
 httpRefererOptions = "httpRefererOptions";
+rulesSetField = "rulesSet"
 
 main();
 
 function main() {
     document.addEventListener('DOMContentLoaded', restoreWhitelist);
-    document.querySelector('#saveWhitelist').addEventListener('click', saveWhitelist);
+    document.querySelector('#saveWhitelistButton').addEventListener('click', saveWhitelist);
     
     document.addEventListener('DOMContentLoaded', restorePrivacy);
-    document.querySelector('#savePrivacy').addEventListener('click', savePrivacy);
+    document.querySelector('#savePrivacyButton').addEventListener('click', savePrivacy);
+
+    document.addEventListener('DOMContentLoaded', restoreRulesSet);
+    document.querySelector('#saveWhitelistButton').addEventListener('click', saveRulesSet);
 }
 
 function restoreWhitelist() {
@@ -54,6 +58,26 @@ function savePrivacy() {
 
     cacheCleaner.createTimer(parseInt(resources.getClearCacheMins()));
     visualFeedback("statusPrivacy");
+}
+
+function restoreRulesSet() {
+    var rulesSet = resources.getRulesSet().join("\n");
+    if (rulesSet) {
+        setValueById(rulesSetField, rulesSet);
+    }
+}
+
+function saveRulesSet() {
+    var rulesSet = getValueById(rulesSetField).split("\n");
+    rulesSet = rulesSet.filter(function(e){return e});
+    
+    rulesSet = validateRulesSet(rulesSet);
+    rulesSet = resources.sortBasedOnUrl(rulesSet);
+    
+    setValueById(rulesSetField, rulesSet.join("\n"));
+    resources.setRulesSet(rulesSet);
+
+    visualFeedback("statusWhitelist");
 }
 
 function getValueById(elementId) {

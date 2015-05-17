@@ -28,34 +28,60 @@ CCleaner.removeUnwantedCookies = function() {
                     
                 listOfAllCookiesDomain.push(domainName);
             }
-            
-            var listOfNotWhiteListedCookies = listOfAllCookiesDomain;
-            if (resources.getDomainsAllowed()) {
-                var whitelistedDomains = resources.getDomainsAllowed().split(",");
-                listOfNotWhiteListedCookies = functionPointer.getListOfUnusedCookies(whitelistedDomains, listOfAllCookiesDomain);
+
+            if (resources.getRulesSet()) {
+                listOfAllCookiesDomain = functionPointer.excludeOpenedTabCookies(functionPointer, listOfAllCookiesDomain, listOfActiveUrls);
+                listOfAllCookiesDomain = functionPointer.applyRuleSet(functionPointer, listOfAllCookiesDomain, listOfActiveUrls);
             }
-            
-            var listOfUnwantedCookies = functionPointer.getListOfUnusedCookies(listOfActiveUrls, listOfNotWhiteListedCookies);
-            functionPointer.removeAllCookies(listOfUnwantedCookies, cookies);
+
+            functionPointer.removeAllCookies(listOfAllCookiesDomain, cookies);
         });
     });
 }
 
-CCleaner.getListOfUnusedCookies = function(listOfURLToIgnore, listOfAllCookiesDomain) {
-    var listOfUnwantedCookies = listOfAllCookiesDomain;
-    
-    loopNewCookieDomain:
-    for (var i = 0; i < listOfAllCookiesDomain.length; i++) {
-        for (var j = 0; j < listOfURLToIgnore.length; j++) {
-            if (listOfURLToIgnore[j] && listOfAllCookiesDomain[i]) {
-                if (listOfURLToIgnore[j].indexOf(listOfAllCookiesDomain[i]) != -1) {
-                    listOfUnwantedCookies = this.removeAllInstance(listOfUnwantedCookies, listOfAllCookiesDomain[i]);
-                    continue loopNewCookieDomain;
-                }
+CCleaner.excludeOpenedTabCookies = function(functionPointer, listOfAllCookiesDomain, listOfActiveUrls) {
+    for (var i=0; i < listOfAllCookiesDomain.length; i++) {
+        for (var j=0; j<listOfActiveUrls.length; j++) {
+            if (listOfActiveUrls[j].indexOf(listOfAllCookiesDomain[i]) != -1) {
+                listOfAllCookiesDomain = functionPointer.removeAllInstance(listOfAllCookiesDomain, listOfAllCookiesDomain[i]);
+                --i;
             }
         }
     }
-    return listOfUnwantedCookies;
+
+    return listOfAllCookiesDomain;
+}
+
+CCleaner.applyRuleSet = function(functionPointer, listOfAllCookiesDomain, listOfActiveUrls) {
+    listOfForceClearCookie = [];
+    var rulesSet = resources.getRulesSet();
+    var COOKIE = string.getCookie();
+
+    for (var i=0; i < listOfAllCookiesDomain.length; i++) {
+        for (var j = (rulesSet.length - 1); j >= 0; j--) {
+            rule = resources.splitEachRule(rulesSet[j]);
+            url = rule[string.RULE_URL_POS];
+
+            isCookieKeep = (rule[string.RULE_PREF_TYPE_POS] == COOKIE
+                && rule[string.RULE_USER_PREF_POS] == string.getCookieKeep());
+
+            if (url.indexOf(listOfAllCookiesDomain[i]) != -1 && isCookieKeep) {
+                listOfAllCookiesDomain = functionPointer.removeAllInstance(listOfAllCookiesDomain, listOfAllCookiesDomain[i]);
+                --i;
+            } else if (url.indexOf(listOfAllCookiesDomain[i]) != -1 
+                &&  (rule[string.RULE_PREF_TYPE_POS] == COOKIE
+                && rule[string.RULE_USER_PREF_POS] == string.getCookieClear())) {
+                    listOfForceClearCookie.push(listOfAllCookiesDomain[i]);
+            }
+
+            if (url == string.RULE_ANY_URL && isCookieKeep) {
+                listOfAllCookiesDomain = listOfForceClearCookie;
+                break;
+            }
+        }
+    }
+
+    return listOfAllCookiesDomain;
 }
 
 CCleaner.removeAllInstance = function(array, itemToRemove) {

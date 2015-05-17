@@ -21,9 +21,8 @@ input.numeric {
     position: relative;
     min-height: 400px;
     min-width: 650px;
-    height: 87%;
+    width: 100%;
     clear: both;
-    margin: 25px 0;
 }
 
 .tab {
@@ -51,9 +50,12 @@ input.numeric {
     background: white;
     right: 0;
     bottom: 0;
-    padding: 0px 20px;
+    display: table;
+    padding: 15px 0px 15px 15px;
+    margin-bottom: 15px;
     border: 1px solid #1779E8;
     clear: both;
+    width: 99%;
 }
 
 [type=radio]:checked ~ label {
@@ -64,6 +66,10 @@ input.numeric {
 
 [type=radio]:checked ~ label ~ .content {
     z-index: 1;
+}
+
+[type=radio]:not(:checked) ~ label ~ .content {
+    display: none;
 }
 
 /* For popup */

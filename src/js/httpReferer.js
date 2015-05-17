@@ -6,8 +6,9 @@ HReferer.bindListener = function () {
     
     chrome.webRequest.onBeforeSendHeaders.addListener(function (details) {
         for (var i = 0; i < details.requestHeaders.length; ++i) {
-            if (details.requestHeaders[i].name === 'Referer') {
-                var newHeader = hRefererPointer.editBasedOnRefererPref(details.requestHeaders, i);
+            url = details.url;
+            if (details.requestHeaders[i].name === resources.capitalizeFirstLetter(string.getReferer())) {
+                var newHeader = hRefererPointer.editBasedOnRefererPref(details.requestHeaders, i, url);
                 break;
             }
         }
@@ -15,21 +16,32 @@ HReferer.bindListener = function () {
     },{urls: ["<all_urls>"]},["blocking", "requestHeaders"]);
 };
 
-HReferer.editBasedOnRefererPref = function(requestHeader, pos) {
+HReferer.editBasedOnRefererPref = function(requestHeader, pos, packetUrl) {
     var newHeader = requestHeader;
-    var httpRefererOptions = resources.getHttpReferer();
-    
+    var httpRefererOptions = HReferer.getRefererOption(packetUrl);
     switch (httpRefererOptions) {
-        case "suppress":
+        case string.getRefererBlock():
             newHeader.splice(pos, 1);
             break;
-        case "domainOnly":
+        case string.getRefererDomainOnly():
             url = newHeader[pos].value
             newHeader[pos].value = url.replace(/^.*:\/\//g, '').split('/')[0];
             break;
-        case "normal":
+        case string.getRefererAllow():
+            break;
+        default:
             break;
     }
     
     return newHeader;
+}
+
+HReferer.getRefererOption = function(packetUrl) {
+    URL_POS = string.RULE_URL_POS;
+    PREFERENCE_POS = string.RULE_PREF_TYPE_POS;
+    REFERER = string.getReferer();
+    rulesSet = resources.getRulesSet();
+    userRefererPref = resources.getDefaultUserPref(packetUrl, REFERER);
+
+    return resources.getUserPref(userRefererPref, packetUrl, REFERER);
 }

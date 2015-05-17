@@ -17,6 +17,7 @@
     "background": {
         "scripts": [
             "js/resources.js",
+            "js/strings.js",
             "js/firstRun.js", 
             "js/cookieCleaner.js",
             "js/cleanCache.js",
