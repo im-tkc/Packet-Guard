@@ -65,7 +65,7 @@ function validateUserOptionsAndType(ruleComponents) {
     typeIndex = supportedTypes.indexOf(userPrefType);
     isValidPrefType = supportedTypes.indexOf(userPrefType) != -1;
     isValidUserPref = (supportedOptions[typeIndex].indexOf(userPref) != -1) 
-            || (string.getUserAgentCustom().test(userOption));
+            || (string.getUserAgentCustom().test(userPref));
     if (isValidPrefType && isValidUserPref) {
         validRule = true;
     }

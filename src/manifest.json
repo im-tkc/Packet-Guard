@@ -22,6 +22,9 @@
             "js/cookieCleaner.js",
             "js/cleanCache.js",
             "js/httpReferer.js",
+            "js/etag.js",
+            "js/userAgent.js",
+            "js/httpRequestHeader.js",
             "js/main.js"
         ],
         "persistent": true

@@ -5,6 +5,8 @@ string.RULE_PREF_TYPE_POS = 1;
 string.RULE_USER_PREF_POS = 2;
 string.RULE_LENGTH = 3;
 string.RULE_ANY_URL = "*";
+string.HTTP_IF_NONE_MATCH = "If-None-Match"; //rule for etag
+string.USER_AGENT_GENERIC_CHROME = "Mozilla/5.0 AppleWebKit (KHTML, like Gecko) Chrome Safari";
 
 string.getSupportedTypes = function() {
 	return ["etag", "referer", "cookie", "user-agent"];
@@ -15,7 +17,7 @@ string.getSupportedOptions = function() {
         ["block", "allow"], 
         ["block", "domain-only", "allow"],
         ["clear", "keep"],
-        ["generic", "keep", new RegExp("^\".*\"$")]
+        ["generic", "allow", "block", new RegExp("^\".*\"$")]
     ];
 }
 
@@ -35,5 +37,6 @@ string.getCookieClear = function() { a=string.getSupportedOptions(); return a[2]
 string.getCookieKeep = function() { a=string.getSupportedOptions(); return a[2][1]; }
 
 string.getUserAgentGeneric = function() { a=string.getSupportedOptions(); return a[3][0]; }
-string.getUserAgentKeep = function() { a=string.getSupportedOptions(); return a[3][1]; }
-string.getUserAgentCustom = function() { a=string.getSupportedOptions(); return a[3][2]; }
+string.getUserAgentAllow = function() { a=string.getSupportedOptions(); return a[3][1]; }
+string.getUserAgentBlock = function() { a=string.getSupportedOptions(); return a[3][2]; }
+string.getUserAgentCustom = function() { a=string.getSupportedOptions(); return a[3][3]; }
