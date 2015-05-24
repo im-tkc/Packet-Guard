@@ -4,7 +4,7 @@ hReferer=HTTP_Referer.prototype;
 hReferer.performHTTPRefererModification = function(requestHeaders, pos, url) {
     var newHeader = requestHeaders;
     var REFERER = string.getReferer();
-
+    
     if (requestHeaders[pos].name === resources.capitalizeFirstXLetters(REFERER, 1)) {
         var refererBlock = string.getRefererBlock();
         var refererAllow = string.getRefererAllow();

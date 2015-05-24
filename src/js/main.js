@@ -6,3 +6,6 @@ cookieCleaner.bindListener();
 
 httpRequestHeader = new HTTP_RequestHeader();
 httpRequestHeader.bindListener();
+
+tabsRecorder = new TabsRecorder();
+tabsRecorder.bindListener();

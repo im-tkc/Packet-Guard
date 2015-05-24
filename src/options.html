@@ -19,48 +19,30 @@
                 <p>
                     <input type="checkbox" id="clearCacheOnExitOption"> Clear cache on exit 
                 </p>
-                <p>
-                    Select the type of HTTP referer to be sent:
-                    <select id="httpRefererOptions">
-                        <option value="suppress">Suppress HTTP Referer (more private)</option>
-                        <option value="domainOnly">Send domain information only</option>
-                        <option value="normal">Leave it as it is (not recommended)</option>
-                    </select>
-                </p>
-                
-                <button id="savePrivacyButton">Save</button>
+
+                <button id="saveGeneralSettingsButton">Save</button>
+                <h2>Import/Export</h2>
+                <button id="importSettingButton">Import settings</button>&nbsp&nbsp&nbsp&nbsp
+                <button id="exportSettingButton">Export settings</button>
                 <div id="statusPrivacy"></div>
             </div> 
         </div>
     
         <div class="tab">
            <input type="radio" id="tab-2" name="tab-group-1">
-           <label for="tab-2">Manage exceptions</label>
+           <label for="tab-2">Manage rules</label>
            
             <div class="content">
-                <p class="question">How to add URL to exclusion list?</p>
-                <p style="font-size: 14px;">Here are the general rules when adding URL(s) to exclusion list: </p>
-                <ul>
-                    <li>Add one URL per line</li>
-                    <li>
-                        Insert "www.example.com" (with quotes removed) to the list 
-                        if you wish to add http://www.example.com to exclusion list.
-                    </li>
-                </ul>
-
-                <textarea rows="10" cols="70" id="domainList" style="resize:none;"></textarea>
-                <br/>
-                <br/>
                 <textarea rows="50" cols="70" id="rulesSet" style="resize:none;display: table-row;"></textarea>
                 <br/>
-                <button id="saveWhitelistButton">Save</button>
+                <button id="saveRulesSetButton">Save</button>
                 <div id="statusWhitelist"></div>
             </div> 
         </div>
     </div>
 </body>
 
-<script src="js/jquery-2.0.3.min.js"></script>
+<script src="js/lib/jquery-2.0.3.min.js"></script>
 <script src="js/resources.js"></script>
 <script src="js/strings.js"></script>
 <script src="js/options/validate.js"></script>

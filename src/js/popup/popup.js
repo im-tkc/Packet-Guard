@@ -8,17 +8,17 @@ chrome.tabs.query({active: true}, function(tabs) {
     var urlHTMLTag = document.getElementById("activeUrl");
     urlHTMLTag.innerHTML = urlToExclude;
     
-    var domainsAllowed = getListOfAllowedDomains();
-    if(domainsAllowed && domainsAllowed.indexOf(urlToExclude) != -1) {
-        showElement(removeToListButtonId);
-    } else {
-        showElement(addToListButtonId);
-    }
+    // var domainsAllowed = getListOfAllowedDomains();
+    // if(domainsAllowed && domainsAllowed.indexOf(urlToExclude) != -1) {
+    //     showElement(removeToListButtonId);
+    // } else {
+    //     showElement(addToListButtonId);
+    // }
 });
 
-document.querySelector('#'+ addToListButtonId).addEventListener('click', addToList);
-document.querySelector('#'+ removeToListButtonId).addEventListener('click', removeToList);
-document.querySelector('#clearAllCookies').addEventListener('click', clearAllCookies);
+// document.querySelector('#'+ addToListButtonId).addEventListener('click', addToList);
+// document.querySelector('#'+ removeToListButtonId).addEventListener('click', removeToList);
+// document.querySelector('#clearAllCookies').addEventListener('click', clearAllCookies);
 
 function showElement(id) {
     var element = document.getElementById(id);
@@ -76,3 +76,44 @@ function clearAllCookies() {
         checkmarkHTMLTag.innerHTML = "";
     }, 1000);
 }
+
+function generateButtons() {
+    var supportedTypes = string.getSupportedTypes();
+    var supportedOptions = string.getSupportedOptions();
+    var table = document.getElementById("table");
+
+    for (var i=0; i < supportedTypes.length; i++) {
+        var row = table.insertRow(-1);
+        var data1 = row.insertCell(-1);
+        label = document.createElement("label");
+
+        var select = document.createElement("select");
+        select.id = "select" + resources.capitalizeFirstXLetters(supportedTypes[i], 1);
+        label.setAttribute("for", select.id);
+        label.innerHTML = supportedTypes[i]
+        data1.appendChild(label);
+
+        var data2 = row.insertCell(-1);
+        for (var j=0; j < supportedOptions[i].length; j++) {
+            var option = document.createElement("option");
+            option.value = option.text = supportedOptions[i][j];
+            select.add(option);
+        }
+        
+        data2.appendChild(select);
+    }
+
+    document.body.appendChild(table);
+}
+
+$(document).ready(function() {
+    $("select").selectmenu();
+});
+
+// $(function() {
+//     $('select').each(function() {
+//         $(this).selectmenu();
+//     });
+// });
+
+document.addEventListener('DOMContentLoaded', generateButtons);

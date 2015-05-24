@@ -1,42 +1,19 @@
-domainListField = "domainList";
 clearCacheField = "autoClearCacheField";
 clearCacheOnExit = "clearCacheOnExitOption";
-httpRefererOptions = "httpRefererOptions";
 rulesSetField = "rulesSet"
 
 main();
 
 function main() {
-    document.addEventListener('DOMContentLoaded', restoreWhitelist);
-    document.querySelector('#saveWhitelistButton').addEventListener('click', saveWhitelist);
-    
-    document.addEventListener('DOMContentLoaded', restorePrivacy);
-    document.querySelector('#savePrivacyButton').addEventListener('click', savePrivacy);
+    document.addEventListener('DOMContentLoaded', restoreGeneralSettings);
+    document.querySelector('#saveGeneralSettingsButton').addEventListener('click', saveGeneralSettings);
 
     document.addEventListener('DOMContentLoaded', restoreRulesSet);
-    document.querySelector('#saveWhitelistButton').addEventListener('click', saveRulesSet);
+    document.querySelector('#saveRulesSetButton').addEventListener('click', saveRulesSet);
 }
 
-function restoreWhitelist() {
-    var domainsAllowed = resources.getDomainsAllowed();
-    if (domainsAllowed) {   
-        domainsAllowed = domainsAllowed.replace(/,/g, "\n");
-        setValueById(domainListField, domainsAllowed);
-    }
-}
-
-function saveWhitelist() {
-    var domainsAllowed = getValueById(domainListField).split("\n");
-    
-    domainsAllowed = domainsAllowed.filter(function(e){return e});
-    resources.setDomainsAllowed(domainsAllowed);
-
-    visualFeedback("statusWhitelist");
-}
-
-function restorePrivacy() {
+function restoreGeneralSettings() {
     var clearCacheMins = resources.getClearCacheMins();
-    var httpReferer = resources.getHttpReferer();
 
     if (clearCacheMins) {
         setValueById(clearCacheField, clearCacheMins);
@@ -45,14 +22,9 @@ function restorePrivacy() {
     if (clearCacheOnExit) {
         setIsChecked(clearCacheOnExit, resources.getClearCacheOnExit());
     }
-    
-    if (httpReferer) {
-        setValueById(httpRefererOptions, httpReferer);
-    }
 }
 
-function savePrivacy() {
-    resources.setHttpReferer(getValueById(httpRefererOptions));
+function saveGeneralSettings() {
     resources.setClearCacheMins(getValueById(clearCacheField));
     resources.setClearCacheOnExit(getIsChecked(clearCacheOnExit));
 
@@ -73,6 +45,9 @@ function saveRulesSet() {
     
     rulesSet = validateRulesSet(rulesSet);
     rulesSet = resources.sortBasedOnUrl(rulesSet);
+    rulesSet = rulesSet.filter(function(value, index, self) { 
+        return self.indexOf(value) === index;
+    });
     
     setValueById(rulesSetField, rulesSet.join("\n"));
     resources.setRulesSet(rulesSet);

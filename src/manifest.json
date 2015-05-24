@@ -25,6 +25,7 @@
             "js/etag.js",
             "js/userAgent.js",
             "js/httpRequestHeader.js",
+            "js/tabsRecorder.js",
             "js/main.js"
         ],
         "persistent": true

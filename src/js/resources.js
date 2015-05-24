@@ -1,19 +1,9 @@
-domainsLocalStorageName = "domainsAllowed";
-clearCacheMinsStorageName = "clearCacheMins";
-clearCacheOnExitStorageName = "clearCacheOnExit";
-httpRefererStorageName = "httpReferer";
-rulesSetName = "rulesSet"
+var clearCacheMinsStorageName = "clearCacheMins";
+var clearCacheOnExitStorageName = "clearCacheOnExit";
+var rulesSetName = "rulesSet";
 
 function Resource() {}
 resources = Resource.prototype;
-
-resources.getDomainsAllowed = function() {
-    return localStorage[domainsLocalStorageName];
-}
-
-resources.setDomainsAllowed = function(value) {
-    localStorage[domainsLocalStorageName] = value;
-}
 
 resources.getClearCacheMins = function() {
     return localStorage[clearCacheMinsStorageName];
@@ -29,14 +19,6 @@ resources.getClearCacheOnExit = function() {
 
 resources.setClearCacheOnExit = function(value) {
     localStorage[clearCacheOnExitStorageName] = value;
-}
-
-resources.getHttpReferer = function() {
-    return localStorage[httpRefererStorageName];
-}
-
-resources.setHttpReferer = function(value) {
-    localStorage[httpRefererStorageName] = value;
 }
 
 resources.getRulesSet = function() {
@@ -77,7 +59,7 @@ resources.editBasedOnUserPref = function(requestHeader, pos, packetUrl, rulePref
         default:
             break;
     }
-    
+
     return newHeader;
 }
 
@@ -94,6 +76,8 @@ resources.getUserPref = function(packetUrl, rulePrefType) {
             break;
         }
     }
+
+    // console.log("Based on the rule: " + packetUrl + " will be applied with " + userPref + " for " + rulePrefType);
 
     return userPref;
 }
