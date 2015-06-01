@@ -2,23 +2,27 @@ var removeToListButtonId = "removeToList";
 var addToListButtonId = "addToList";
 var urlToExclude = "";
 
-chrome.tabs.query({active: true}, function(tabs) {
-    var activeUrl = tabs[0].url;
-    urlToExclude = activeUrl.replace(/^.*:\/\//g, '').split('/')[0];
-    var urlHTMLTag = document.getElementById("activeUrl");
-    urlHTMLTag.innerHTML = urlToExclude;
-    
-    // var domainsAllowed = getListOfAllowedDomains();
-    // if(domainsAllowed && domainsAllowed.indexOf(urlToExclude) != -1) {
-    //     showElement(removeToListButtonId);
-    // } else {
-    //     showElement(addToListButtonId);
-    // }
-});
+main()
 
-// document.querySelector('#'+ addToListButtonId).addEventListener('click', addToList);
-// document.querySelector('#'+ removeToListButtonId).addEventListener('click', removeToList);
-// document.querySelector('#clearAllCookies').addEventListener('click', clearAllCookies);
+function main() {
+    chrome.tabs.query({active: true}, function(tabs) {
+        var activeUrl = tabs[0].url;
+        urlToExclude = activeUrl.replace(/^.*:\/\//g, '').split('/')[0];
+        var urlHTMLTag = document.getElementById("activeUrl");
+        urlHTMLTag.innerHTML = urlToExclude;
+        
+        // var domainsAllowed = getListOfAllowedDomains();
+        // if(domainsAllowed && domainsAllowed.indexOf(urlToExclude) != -1) {
+        //     showElement(removeToListButtonId);
+        // } else {
+        //     showElement(addToListButtonId);
+        // }
+    });
+    document.addEventListener('DOMContentLoaded', generateButtons);
+    // document.querySelector('#'+ addToListButtonId).addEventListener('click', addToList);
+    // document.querySelector('#'+ removeToListButtonId).addEventListener('click', removeToList);
+    // document.querySelector('#clearAllCookies').addEventListener('click', clearAllCookies);
+}
 
 function showElement(id) {
     var element = document.getElementById(id);
@@ -83,37 +87,59 @@ function generateButtons() {
     var table = document.getElementById("table");
 
     for (var i=0; i < supportedTypes.length; i++) {
+        var prefType = resources.capitalizeFirstXLetters(supportedTypes[i], 1);
+
         var row = table.insertRow(-1);
         var data1 = row.insertCell(-1);
-        label = document.createElement("label");
-
-        var select = document.createElement("select");
-        select.id = "select" + resources.capitalizeFirstXLetters(supportedTypes[i], 1);
-        label.setAttribute("for", select.id);
-        label.innerHTML = supportedTypes[i]
-        data1.appendChild(label);
+        
+        var legend = document.createElement("legend");
+        legend.innerHTML = prefType
+        data1.appendChild(legend);
 
         var data2 = row.insertCell(-1);
         for (var j=0; j < supportedOptions[i].length; j++) {
-            var option = document.createElement("option");
-            option.value = option.text = supportedOptions[i][j];
-            select.add(option);
-        }
-        
-        data2.appendChild(select);
-    }
+            if (supportedOptions[i][j].toString() !== string.getUserAgentCustom().toString()) {
+                var userPref = resources.capitalizeFirstXLetters(supportedOptions[i][j], 1);
+                var input = document.createElement("input");
+                input.id = "radio-" + prefType + "-" + userPref;
+                input.name = "radio-" + prefType;
+                input.value = supportedOptions[i][j];
+                input.type = "radio";
 
-    document.body.appendChild(table);
+                var label = document.createElement("label");
+                label.setAttribute("for", input.id);
+                label.textContent = userPref;
+
+                data2.appendChild(input);
+                data2.appendChild(label);
+            }
+        }
+        data1.setAttribute("style", "width: 20%;");
+        data2.setAttribute("style", "width: 80%;");
+    }
+    applyInputStyles();
 }
 
-$(document).ready(function() {
-    $("select").selectmenu();
-});
+function applyInputStyles() {
+    styleColour = "green";
+    $('input').each(function(){
+        var self = $(this),
+        label = self.next(),
+        label_text = label.text();
+        label.remove();
+        self.iCheck({
+            checkboxClass: 'icheckbox_line-' + styleColour,
+            radioClass: 'iradio_line-' + styleColour,
+            insert: '<div class="icheck_line-icon"></div>' + label_text
+        });
+    });
 
-// $(function() {
-//     $('select').each(function() {
-//         $(this).selectmenu();
-//     });
-// });
-
-document.addEventListener('DOMContentLoaded', generateButtons);
+    var listOfRadioButtons = document.getElementsByClassName("iradio_line-" + styleColour);
+    for (var i=0; i < listOfRadioButtons.length; i++) {
+        listOfRadioButtons[i].setAttribute("style", "\
+            float: left;\
+            width: initial;\
+            margin-left: 5px;\
+        ");
+    }
+}

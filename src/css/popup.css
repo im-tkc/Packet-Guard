@@ -1,8 +1,14 @@
+*{
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 16px;
+}
+
 body{
-    min-width: 150px;
+    min-width: 450px;
     min-height: 100px;
 }
-button.listToAddOrRemove{
+
+/*button.listToAddOrRemove{
     margin-bottom: 4px;
     display:none;
     text-decoration:none; 
@@ -132,4 +138,6 @@ button#clearAllCookies:active{
     -webkit-box-shadow:0px 0px 2px #bababa, inset 0px 0px 1px #ffffff; 
     -moz-box-shadow: 0px 0px 2px #bababa,  inset 0px 0px 1px #ffffff;  
     box-shadow:0px 0px 2px #bababa, inset 0px 0px 1px #ffffff;  
-}
+
+
+}*/

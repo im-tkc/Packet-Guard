@@ -1,25 +1,33 @@
 <html>
     <head>
-        <!--<link rel="stylesheet" type="text/css" href="css/popup.css">-->
-        <link rel="stylesheet" type="text/css" href="css/lib/jquery-ui.min.css">
-        <link rel="stylesheet" type="text/css" href="css/lib/jquery-ui.structure.min.css">
-        <link rel="stylesheet" type="text/css" href="css/lib/jquery-ui.theme.min.css">
+        <link rel="stylesheet" type="text/css" href="css/popup.css">
+        <link rel="stylesheet" type="text/css" href="css/lib/line/green.css">
+
+        <script src="js/lib/jquery-2.0.3.min.js"></script>
+        <script src="js/lib/icheck.min.js"></script>
+
+        <script src="js/resources.js"></script>
+        <script src="js/strings.js"></script>
+        
+        <script src="js/cookieCleaner.js"></script>
+        <script src="js/popup/popup.js"></script>
     </head>
     <body>
-        <p style="font: 14px Arial;"><b id="activeUrl"></b></p>
-        <hr>
+        <div style="float: left; width: 100%; display: table;">
+            <div style="float: left; width: 50%; display: table-row;">
+                <b id="activeUrl"></b>
+            </div>
+            <div style="float: left; width: 50%; display: table-row;">
+                <img src="ico/commit.png" height="16px" width="16px">
+            </div>
+        </div>
+        <br>
         <!--<button class="listToAddOrRemove" id="addToList">Add to exclusion list</button>
         <button class="listToAddOrRemove" id="removeToList">Remove from exclusion list</button>
         <button id="clearAllCookies">Clear all cookies</button><span id="checkmark" style="color: #2BB319;"></span>-->
 
-        <table id="table"></table>
+        <div style="float: left; width: 100%; display: table;">
+            <table id="table" style="display: table-row; width: inherit;"></table>
+        </div>
     </body>
-    <script src="js/lib/jquery-2.0.3.min.js"></script>
-    <script src="js/lib/jquery-ui.min.js"></script>
-
-    <script src="js/resources.js"></script>
-    <script src="js/strings.js"></script>
-    
-    <script src="js/cookieCleaner.js"></script>
-    <script src="js/popup/popup.js"></script>
 </html>
