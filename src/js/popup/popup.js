@@ -1,24 +1,32 @@
 var removeToListButtonId = "removeToList";
 var addToListButtonId = "addToList";
 var urlToExclude = "";
+var imageCommitId = "img-isCommitted"
 
 main()
 
 function main() {
-    chrome.tabs.query({active: true}, function(tabs) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         var activeUrl = tabs[0].url;
-        urlToExclude = activeUrl.replace(/^.*:\/\//g, '').split('/')[0];
+    
+        var visitUrl = activeUrl.replace(/^.*:\/\//g, '').split('/')[0];
         var urlHTMLTag = document.getElementById("activeUrl");
-        urlHTMLTag.innerHTML = urlToExclude;
+        urlHTMLTag.innerHTML = visitUrl;
         
+        var isInternalUrl = (activeUrl.startsWith(string.CHROME_WEBSTORE) || string.INTERNAL_URL.test(activeUrl))
+                            ? true
+                            : false;
+
         // var domainsAllowed = getListOfAllowedDomains();
         // if(domainsAllowed && domainsAllowed.indexOf(urlToExclude) != -1) {
         //     showElement(removeToListButtonId);
         // } else {
         //     showElement(addToListButtonId);
         // }
+
+        generateFields(visitUrl, isInternalUrl); 
     });
-    document.addEventListener('DOMContentLoaded', generateButtons);
+    
     // document.querySelector('#'+ addToListButtonId).addEventListener('click', addToList);
     // document.querySelector('#'+ removeToListButtonId).addEventListener('click', removeToList);
     // document.querySelector('#clearAllCookies').addEventListener('click', clearAllCookies);
@@ -81,46 +89,55 @@ function clearAllCookies() {
     }, 1000);
 }
 
-function generateButtons() {
+function generateFields(visitUrl, isInternalUrl) {
     var supportedTypes = string.getSupportedTypes();
     var supportedOptions = string.getSupportedOptions();
     var table = document.getElementById("table");
 
     for (var i=0; i < supportedTypes.length; i++) {
         var prefType = resources.capitalizeFirstXLetters(supportedTypes[i], 1);
-
         var row = table.insertRow(-1);
-        var data1 = row.insertCell(-1);
-        
-        var legend = document.createElement("legend");
-        legend.innerHTML = prefType
-        data1.appendChild(legend);
-
-        var data2 = row.insertCell(-1);
-        for (var j=0; j < supportedOptions[i].length; j++) {
-            if (supportedOptions[i][j].toString() !== string.getUserAgentCustom().toString()) {
-                var userPref = resources.capitalizeFirstXLetters(supportedOptions[i][j], 1);
-                var input = document.createElement("input");
-                input.id = "radio-" + prefType + "-" + userPref;
-                input.name = "radio-" + prefType;
-                input.value = supportedOptions[i][j];
-                input.type = "radio";
-
-                var label = document.createElement("label");
-                label.setAttribute("for", input.id);
-                label.textContent = userPref;
-
-                data2.appendChild(input);
-                data2.appendChild(label);
-            }
-        }
-        data1.setAttribute("style", "width: 20%;");
-        data2.setAttribute("style", "width: 80%;");
+        generateLabelColumn(prefType, row);
+        generateOptionsColumn(prefType, row, supportedOptions, i);
     }
-    applyInputStyles();
+    applyInputStyles(isInternalUrl);
+    checkRadioBasedOnRule(visitUrl, supportedTypes);
+    createButtonEventHandler();
 }
 
-function applyInputStyles() {
+function generateLabelColumn(prefType, row) {
+    var data1 = row.insertCell(-1);
+    
+    var legend = document.createElement("legend");
+    legend.innerHTML = prefType
+    data1.appendChild(legend);
+
+    data1.setAttribute("style", "width: 20%;");
+}
+
+function generateOptionsColumn(prefType, row, supportedOptions, idx) {
+    var data2 = row.insertCell(-1);
+    for (var j=0; j < supportedOptions[idx].length; j++) {
+        if (supportedOptions[idx][j].toString() !== string.getUserAgentCustom().toString()) {
+            var userPref = resources.capitalizeFirstXLetters(supportedOptions[idx][j], 1);
+            var input = document.createElement("input");
+            input.id = "radio-" + prefType + "-" + userPref;
+            input.name = "radio-" + prefType;
+            input.value = supportedOptions[idx][j];
+            input.type = "radio";
+
+            var label = document.createElement("label");
+            label.setAttribute("for", input.id);
+            label.textContent = userPref;
+
+            data2.appendChild(input);
+            data2.appendChild(label);
+        }
+    }
+    data2.setAttribute("style", "width: 80%;");
+}
+
+function applyInputStyles(isInternalUrl) {
     styleColour = "green";
     $('input').each(function(){
         var self = $(this),
@@ -132,6 +149,9 @@ function applyInputStyles() {
             radioClass: 'iradio_line-' + styleColour,
             insert: '<div class="icheck_line-icon"></div>' + label_text
         });
+
+        if(isInternalUrl) { self.iCheck('disable'); }
+
     });
 
     var listOfRadioButtons = document.getElementsByClassName("iradio_line-" + styleColour);
@@ -142,4 +162,18 @@ function applyInputStyles() {
             margin-left: 5px;\
         ");
     }
+}
+
+function checkRadioBasedOnRule(visitUrl, supportedTypes) {
+    for (var i = 0; i < supportedTypes.length; i++) {
+        userPref = resources.getUserPref(visitUrl, supportedTypes[i]);
+        $('input#radio-' + supportedTypes[i] + "-" + userPref).iCheck('check');
+    }
+}
+
+function createButtonEventHandler() {
+    $('input').on('ifChanged', function(event){
+        var imgCommit = document.getElementById(imageCommitId);
+        imgCommit.setAttribute("src", "ico/uncommitted.png");
+    });
 }

@@ -29,7 +29,7 @@ function saveGeneralSettings() {
     resources.setClearCacheOnExit(getIsChecked(clearCacheOnExit));
 
     cacheCleaner.createTimer(parseInt(resources.getClearCacheMins()));
-    visualFeedback("statusPrivacy");
+    visualFeedback("generalSettingStatusDiv");
 }
 
 function restoreRulesSet() {
@@ -44,15 +44,14 @@ function saveRulesSet() {
     rulesSet = rulesSet.filter(function(e){return e});
     
     rulesSet = validateRulesSet(rulesSet);
+    rulesSet = checkIfGlobalRuleExist(rulesSet);
     rulesSet = resources.sortBasedOnUrl(rulesSet);
-    rulesSet = rulesSet.filter(function(value, index, self) { 
-        return self.indexOf(value) === index;
-    });
+    rulesSet = resources.removeDuplicateRulesSet(rulesSet);
     
     setValueById(rulesSetField, rulesSet.join("\n"));
     resources.setRulesSet(rulesSet);
 
-    visualFeedback("statusWhitelist");
+    visualFeedback("rulesSetStatusDiv");
 }
 
 function getValueById(elementId) {

@@ -47,9 +47,15 @@ resources.reverseRuleUrl = function(array) {
     return array1;
 }
 
-resources.editBasedOnUserPref = function(requestHeader, pos, packetUrl, rulePrefType, stringForBlock, stringForAllow) {
+resources.removeDuplicateRulesSet = function(rulesSet) {
+    return rulesSet.filter(function(value, index, self) { 
+        return self.indexOf(value) === index;
+    });
+}
+
+resources.editBasedOnUserPref = function(requestHeader, pos, visitUrl, rulePrefType, stringForBlock, stringForAllow) {
     var newHeader = requestHeader;
-    var userPref = this.getUserPref(packetUrl, rulePrefType);
+    var userPref = this.getUserPref(visitUrl, rulePrefType);
     switch (userPref) {
         case stringForBlock:
             newHeader.splice(pos, 1);
@@ -63,26 +69,24 @@ resources.editBasedOnUserPref = function(requestHeader, pos, packetUrl, rulePref
     return newHeader;
 }
 
-resources.getUserPref = function(packetUrl, rulePrefType) {
+resources.getUserPref = function(visitUrl, rulePrefType) {
     rulesSet = resources.getRulesSet();
-    userPref = resources.getDefaultUserPref(packetUrl, rulePrefType);
+    userPref = resources.getDefaultUserPref(rulePrefType);
 
     for (var i = (rulesSet.length - 1); i >= 0; i--) {
         rule = this.splitEachRule(rulesSet[i]);
 
-        if (packetUrl.indexOf(rule[string.RULE_URL_POS]) != -1 
+        if (visitUrl.indexOf(rule[string.RULE_URL_POS]) != -1 
             && rule[string.RULE_PREF_TYPE_POS] == rulePrefType) {
             userPref = rule[string.RULE_USER_PREF_POS];
             break;
         }
     }
 
-    // console.log("Based on the rule: " + packetUrl + " will be applied with " + userPref + " for " + rulePrefType);
-
     return userPref;
 }
 
-resources.getDefaultUserPref = function(packetUrl, rulePrefType) {
+resources.getDefaultUserPref = function(rulePrefType) {
     rulesSet = this.getRulesSet();
     userPref = "";
 

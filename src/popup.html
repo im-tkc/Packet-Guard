@@ -11,14 +11,15 @@
         
         <script src="js/cookieCleaner.js"></script>
         <script src="js/popup/popup.js"></script>
+        <script src="js/popup/saveOptions.js"></script>
     </head>
     <body>
-        <div style="float: left; width: 100%; display: table;">
-            <div style="float: left; width: 50%; display: table-row;">
+        <div class="mainDiv">
+            <div class="headerDiv">
                 <b id="activeUrl"></b>
             </div>
-            <div style="float: left; width: 50%; display: table-row;">
-                <img src="ico/commit.png" height="16px" width="16px">
+            <div class="headerDiv">
+                <img src="ico/committed.png" title="Save changes" id="img-isCommitted" height="16px" width="16px">
             </div>
         </div>
         <br>
@@ -26,8 +27,8 @@
         <button class="listToAddOrRemove" id="removeToList">Remove from exclusion list</button>
         <button id="clearAllCookies">Clear all cookies</button><span id="checkmark" style="color: #2BB319;"></span>-->
 
-        <div style="float: left; width: 100%; display: table;">
-            <table id="table" style="display: table-row; width: inherit;"></table>
+        <div class="mainDiv">
+            <table id="table"></table>
         </div>
     </body>
 </html>

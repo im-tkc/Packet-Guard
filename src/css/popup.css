@@ -8,6 +8,30 @@ body{
     min-height: 100px;
 }
 
+#activeUrl {
+    display: inline-block;
+    width: 100%;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+div.mainDiv {
+    float: left;
+    width: 100%;
+    display: table;
+}
+
+div.headerDiv {
+    float: left;
+    width: 50%;
+    display: table-row;
+}
+
+table#table {
+    display: table-row; 
+    width: inherit;
+}
+
 /*button.listToAddOrRemove{
     margin-bottom: 4px;
     display:none;

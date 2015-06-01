@@ -72,3 +72,26 @@ function validateUserOptionsAndType(ruleComponents) {
 
     return validRule;
 }
+
+function checkIfGlobalRuleExist(rulesSetArray) {
+    var isGlobalRulesSet = [false, false, false, false];
+    var supportedTypes = string.getSupportedTypes();
+
+    for (var i=0; i < rulesSetArray.length; i++) {
+        for (var j=0; j < supportedTypes.length; j++) {
+            if (rulesSetArray[i].startsWith([string.RULE_ANY_URL, supportedTypes[j]].join(" ")))
+                isGlobalRulesSet[j] = true;
+            if (isGlobalRulesSet.indexOf(false) == -1)
+                break;
+        }
+    }
+
+    while (isGlobalRulesSet.indexOf(false) != -1) {
+        var idx = isGlobalRulesSet.indexOf(false);
+        var rule = [string.RULE_ANY_URL, supportedTypes[idx], string.DEFAULT_USER_PREF[idx]].join(" ");
+        rulesSetArray.push(rule);
+        isGlobalRulesSet[idx] = true;
+    }
+
+    return rulesSetArray;
+}
