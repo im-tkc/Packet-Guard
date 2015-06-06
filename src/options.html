@@ -1,14 +1,14 @@
 <html>
     <head>
-        <title>Cookie cleaner options</title>
+        <title>Packet Guard options</title>
         <link rel="stylesheet" type="text/css" href="css/options.css"/>    
     </head>
     <body>
-        <h1><img src="ico/cookies128.png" width="36px" height="36px"></img>&nbsp Cookie cleaner</h1>
+        <h1><img src="ico/packetGuard128.png" width="36px" height="36px"></img>&nbsp Packet Guard</h1>
         <div class="tabs">
             <div class="tab">
                <input type="radio" id="tab-1" name="tab-group-1" checked>
-               <label for="tab-1">Privacy</label>
+               <label for="tab-1">General</label>
                
                 <div class="content">
                     <p>
@@ -40,15 +40,28 @@
                     <div id="rulesSetStatusDiv"></div>
                 </div> 
             </div>
+
+            <div class="tab">
+               <input type="radio" id="tab-3" name="tab-group-1">
+               <label for="tab-3">About & Credit</label>
+               
+                <div class="content">
+                    <h2>Packet Guard 0.5</h2>
+                    <p>
+                        Packet Guard will be a free, no-ads extension. If you like this extension, please 
+                        show your support by <a href="#">donation</a>. Your kind guesture will be greatly appreciated.
+                    </p>
+                </div> 
+            </div>
         </div>
     </body>
 
     <script src="js/lib/jquery-2.0.3.min.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/strings.js"></script>
+    <script src="js/inputHelper.js"></script>
     <script src="js/rulesSetHelper.js"></script>
     <script src="js/options/validate.js"></script>
     <script src="js/options/saveOptions.js"></script>
-
     <script src="js/cleanCache.js"></script>
 </html>

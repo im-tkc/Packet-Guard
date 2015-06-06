@@ -20,8 +20,8 @@ function saveRule() {
         rulesSet = removeOldRule(rulesSet, supportedTypes, url);
         rulesSet = addNewRule(rulesSet, supportedTypes, url);
 
-        rulesSet = resources.sortBasedOnUrl(rulesSet);
-        rulesSet = resources.removeDuplicateRulesSet(rulesSet);
+        rulesSet = rulesSetHelper.sortBasedOnUrl(rulesSet);
+        rulesSet = rulesSetHelper.removeDuplicateRulesSet(rulesSet);
         resources.setRulesSet(rulesSet);
 
         setImageToCommitted();
@@ -32,7 +32,7 @@ function removeOldRule(rulesSet, supportedTypes, url) {
     for (var i=0; i < rulesSet.length; i++) {
         for (var j=0; j < supportedTypes.length; j++) {
             if (rulesSet[i].startsWith([url, supportedTypes[j]].join(" "))) {
-                rulesSet.splice(i, 1)
+                rulesSet.splice(i, 1);
                 --i;
             }
         }
@@ -43,7 +43,7 @@ function removeOldRule(rulesSet, supportedTypes, url) {
 
 function addNewRule(rulesSet, supportedTypes, url){
     for (var i=0; i < supportedTypes.length; i++) {
-        var prefType = resources.capitalizeFirstXLetters(supportedTypes[i], 1);
+        var prefType = inputHelper.capitalizeFirstXLetters(supportedTypes[i], 1);
         var userPref = $('input[name="radio-'+ prefType +'"]:checked').val();
         var rule = [url, supportedTypes[i], userPref].join(" ");
         rulesSet.push(rule);

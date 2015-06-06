@@ -1,6 +1,6 @@
 var clearCacheField = "autoClearCacheField";
 var checkBoxClearCacheOnExit = "clearCacheOnExitOption";
-var rulesSetField = "rulesSet"
+var rulesSetField = "rulesSet";
 
 main();
 
@@ -44,7 +44,7 @@ function restoreRulesSet() {
 
 function saveRulesSet() {
     var rulesSet = getValueById(rulesSetField).split("\n");
-    rulesSet = rulesSet.filter(function(e){return e});
+    rulesSet = rulesSet.filter(function(e){return e;});
     
     rulesSet = rulesSetHelper.formatRuleSet(rulesSet);
     
@@ -108,7 +108,7 @@ function uploadFiles(evt) {
                 document.getElementById(evt.srcElement.id).value = "";
             } 
 
-        }
+        };
         reader.readAsText(file);
     }
 }

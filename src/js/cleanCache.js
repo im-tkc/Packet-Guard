@@ -3,7 +3,7 @@ function CacheCleaner() {}
 cacheCleaner = CacheCleaner.prototype;
 cacheCleaner.getCacheAlarmName = function() {
     return "Clear cache";
-}
+};
 
 cacheCleaner.bindListener = function() {
     cacheCleanerPointer = this;
@@ -18,13 +18,13 @@ cacheCleaner.bindListener = function() {
     if (resources.getClearCacheOnExit() == "true") {
         cacheCleanerPointer.removeCache();
     }
-}
+};
 
 cacheCleaner.removeCache = function() {
     chrome.browsingData.remove({}, {
         cache: true
     });
-}
+};
 
 cacheCleaner.createTimer = function(clearCacheMins) {
     if (clearCacheMins != 0) {
@@ -32,4 +32,4 @@ cacheCleaner.createTimer = function(clearCacheMins) {
     } else {
         chrome.alarms.clear(this.getCacheAlarmName());
     }
-}
+};

@@ -17,8 +17,8 @@ tabsRecorder.bindListener = function() {
     chrome.tabs.onRemoved.addListener(function onRemovedListener(tabId) {
         delete tabsArray[tabId];
     });
-}
+};
 
 tabsRecorder.getTab = function(tabId) {
     return tabsArray[tabId];
-}
+};

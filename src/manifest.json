@@ -1,23 +1,24 @@
 {
     "manifest_version": 2,
 
-    "name": "Cookies cleaner",
-    "description": "Making web surfing more private by saying no to tracker cookies.",
-    "version": "0.3",
+    "name": "Packet Guard",
+    "description": "Making web surfing more private.",
+    "version": "0.5",
     "options_page": "options.html",
     
     "icons": {
-        "48": "ico/cookies48.png",
-        "128": "ico/cookies128.png" 
+        "48": "ico/packetGuard48.png",
+        "128": "ico/packetGuard128.png" 
     },
     "browser_action": {
-        "default_icon": "ico/cookies48.png",
+        "default_icon": "ico/packetGuard48.png",
         "default_popup": "popup.html"
     },
     "background": {
         "scripts": [
             "js/resources.js",
             "js/strings.js",
+            "js/inputHelper.js",
             "js/rulesSetHelper.js",
             "js/firstRun.js", 
             "js/cookieCleaner.js",

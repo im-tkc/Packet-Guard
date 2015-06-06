@@ -8,15 +8,15 @@ userAgent.performUserAgentModification = function(requestHeaders, pos, url) {
     if (requestHeaders[pos].name.toLowerCase() === string.getUserAgent()) {
         var userAgentBlock = string.getUserAgentBlock();
         var userAgentAllow = string.getUserAgentAllow();
-        newHeader = resources.editBasedOnUserPref(requestHeaders, pos, url, USER_AGENT, userAgentBlock, userAgentAllow);
+        newHeader = rulesSetHelper.editBasedOnUserPref(requestHeaders, pos, url, USER_AGENT, userAgentBlock, userAgentAllow);
         newHeader = userAgent.configureUserAgent(USER_AGENT, newHeader, url, pos);
     }
 
     return newHeader;
-}
+};
 
 userAgent.configureUserAgent = function(userAgent, httpHeader, url, pos) {
-    var userPref = resources.getUserPref(url, userAgent);
+    var userPref = rulesSetHelper.getUserPref(url, userAgent);
     if (string.getUserAgentCustom().test(userPref)) {
         httpHeader[pos].value = userPref.substring(1, userPref.length - 1);
     } else if (string.getUserAgentGeneric().localeCompare(userPref) == 0) {
@@ -24,4 +24,4 @@ userAgent.configureUserAgent = function(userAgent, httpHeader, url, pos) {
     }
 
     return httpHeader;
-}
+};

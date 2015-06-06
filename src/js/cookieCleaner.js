@@ -8,7 +8,7 @@ CCleaner.bindListener = function() {
         functionPointer.removeUnwantedCookies();
         functionPointer.removeSiteData();
     });
-}
+};
 
 CCleaner.removeUnwantedCookies = function() {
     var functionPointer = this;
@@ -37,7 +37,7 @@ CCleaner.removeUnwantedCookies = function() {
             functionPointer.removeAllCookies(listOfAllCookiesDomain, cookies);
         });
     });
-}
+};
 
 CCleaner.excludeOpenedTabCookies = function(functionPointer, listOfAllCookiesDomain, listOfActiveUrls) {
     for (var i=0; i < listOfAllCookiesDomain.length; i++) {
@@ -50,7 +50,7 @@ CCleaner.excludeOpenedTabCookies = function(functionPointer, listOfAllCookiesDom
     }
 
     return listOfAllCookiesDomain;
-}
+};
 
 CCleaner.applyRuleSet = function(functionPointer, listOfAllCookiesDomain, listOfActiveUrls) {
     listOfForceClearCookie = [];
@@ -59,7 +59,7 @@ CCleaner.applyRuleSet = function(functionPointer, listOfAllCookiesDomain, listOf
 
     for (var i=0; i < listOfAllCookiesDomain.length; i++) {
         for (var j = (rulesSet.length - 1); j >= 0; j--) {
-            rule = resources.splitEachRule(rulesSet[j]);
+            rule = inputHelper.splitEachRule(rulesSet[j]);
             url = rule[string.RULE_URL_POS];
 
             isCookieKeep = (rule[string.RULE_PREF_TYPE_POS] == COOKIE
@@ -82,7 +82,7 @@ CCleaner.applyRuleSet = function(functionPointer, listOfAllCookiesDomain, listOf
     }
 
     return listOfAllCookiesDomain;
-}
+};
 
 CCleaner.removeAllInstance = function(array, itemToRemove) {
     var filteredArray = array.filter(function(item){
@@ -90,7 +90,7 @@ CCleaner.removeAllInstance = function(array, itemToRemove) {
     });
     
     return filteredArray;
-}
+};
 
 CCleaner.removeAllCookies = function(listOfUnwantedCookies, cookies) {
     for (var i = 0; i < cookies.length; i++) {
@@ -102,12 +102,12 @@ CCleaner.removeAllCookies = function(listOfUnwantedCookies, cookies) {
             }
         }
     }
-}
+};
 
 CCleaner.removeCookie = function(prefix, cookie) {
     var link = prefix + '://' + cookie.domain + cookie.path;
     chrome.cookies.remove({url: link, name: cookie.name});
-}
+};
 
 CCleaner.removeSiteData = function() {
     chrome.browsingData.remove({}, {
@@ -118,4 +118,4 @@ CCleaner.removeSiteData = function() {
         "pluginData": true,
         "webSQL": true
     });
-}
+};

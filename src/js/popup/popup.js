@@ -1,9 +1,9 @@
 var removeToListButtonId = "removeToList";
 var addToListButtonId = "addToList";
 var urlToExclude = "";
-var imageCommitId = "img-isCommitted"
+var imageCommitId = "img-isCommitted";
 
-main()
+main();
 
 function main() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -21,70 +21,13 @@ function main() {
     });
 }
 
-function showElement(id) {
-    var element = document.getElementById(id);
-    element.style.display = "block";
-}
-
-function addToList() {
-    var domainsAllowed = getListOfAllowedDomains();
-    domainsAllowed.push(urlToExclude);
-    setListOfAllowedDomains(domainsAllowed);
-    hideAndShowButton(addToListButtonId, removeToListButtonId);
-}
-
-function removeToList() {
-    var domainsAllowed = getListOfAllowedDomains();
-    removeAllInstance(domainsAllowed, urlToExclude);
-    setListOfAllowedDomains(domainsAllowed);
-    hideAndShowButton(removeToListButtonId, addToListButtonId);
-}
-
-function removeAllInstance(array, item) {
-    var i;
-    while((i = array.indexOf(item)) !== -1) {
-        array.splice(i, 1);
-    }
-}
-
-function getListOfAllowedDomains() {
-    var domainsAllowed = resources.getDomainsAllowed()
-        ? resources.getDomainsAllowed().split(",")
-        : [];
-    return domainsAllowed;
-}
-
-function setListOfAllowedDomains(domainsAllowed) {
-    sanitizedDomainsAllowed = domainsAllowed.filter(function(e){return e});
-    resources.setDomainsAllowed(sanitizedDomainsAllowed);
-}
-
-function hideAndShowButton(elementIdToHide, elementIdToShow) {
-    $("#" + elementIdToHide).hide("slow", function() {
-        $("#" + elementIdToShow).show("slow");
-    });
-}
-
-function clearAllCookies() {
-    chrome.browsingData.removeCookies({});
-    
-    var cookieCleaner = new CookieCleaner();
-    cookieCleaner.removeSiteData();
-    
-    var checkmarkHTMLTag = document.getElementById("checkmark");
-    checkmarkHTMLTag.innerHTML = "&#10004;";
-    setTimeout(function() {
-        checkmarkHTMLTag.innerHTML = "";
-    }, 1000);
-}
-
 function generateFields(visitUrl, isInternalUrl) {
     var supportedTypes = string.getSupportedTypes();
     var supportedOptions = string.getSupportedOptions();
     var table = document.getElementById("table");
 
     for (var i=0; i < supportedTypes.length; i++) {
-        var prefType = resources.capitalizeFirstXLetters(supportedTypes[i], 1);
+        var prefType = inputHelper.capitalizeFirstXLetters(supportedTypes[i], 1);
         var row = table.insertRow(-1);
         generateLabelColumn(prefType, row);
         generateOptionsColumn(prefType, row, supportedOptions, i);
@@ -98,7 +41,7 @@ function generateLabelColumn(prefType, row) {
     var data1 = row.insertCell(-1);
     
     var legend = document.createElement("legend");
-    legend.innerHTML = prefType
+    legend.innerHTML = prefType;
     data1.appendChild(legend);
 
     data1.setAttribute("style", "width: 20%;");
@@ -108,7 +51,7 @@ function generateOptionsColumn(prefType, row, supportedOptions, idx) {
     var data2 = row.insertCell(-1);
     for (var j=0; j < supportedOptions[idx].length; j++) {
         if (supportedOptions[idx][j].toString() !== string.getUserAgentCustom().toString()) {
-            var userPref = resources.capitalizeFirstXLetters(supportedOptions[idx][j], 1);
+            var userPref = inputHelper.capitalizeFirstXLetters(supportedOptions[idx][j], 1);
             var input = document.createElement("input");
             input.id = "radio-" + prefType + "-" + userPref;
             input.name = "radio-" + prefType;
@@ -155,7 +98,7 @@ function applyInputStyles(isInternalUrl) {
 
 function checkRadioBasedOnRule(visitUrl, supportedTypes) {
     for (var i = 0; i < supportedTypes.length; i++) {
-        userPref = resources.getUserPref(visitUrl, supportedTypes[i]);
+        userPref = rulesSetHelper.getUserPref(visitUrl, supportedTypes[i]);
         if (!string.getUserAgentCustom().test(userPref))
             $('input#radio-' + supportedTypes[i] + "-" + userPref).iCheck('check');
     }

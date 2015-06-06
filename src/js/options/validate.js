@@ -19,7 +19,7 @@ $.fn.getOriginalValueIfInvalid = function(originalValue) {
             $(this).val(originalValue);
         }
     });
-}
+};
 
 function validateImportedData(clearCacheMins, clearCacheOnExit) {
     var overallValidate = false;
