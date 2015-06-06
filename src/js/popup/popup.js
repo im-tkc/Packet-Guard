@@ -17,19 +17,8 @@ function main() {
                             ? true
                             : false;
 
-        // var domainsAllowed = getListOfAllowedDomains();
-        // if(domainsAllowed && domainsAllowed.indexOf(urlToExclude) != -1) {
-        //     showElement(removeToListButtonId);
-        // } else {
-        //     showElement(addToListButtonId);
-        // }
-
         generateFields(visitUrl, isInternalUrl); 
     });
-    
-    // document.querySelector('#'+ addToListButtonId).addEventListener('click', addToList);
-    // document.querySelector('#'+ removeToListButtonId).addEventListener('click', removeToList);
-    // document.querySelector('#clearAllCookies').addEventListener('click', clearAllCookies);
 }
 
 function showElement(id) {
@@ -167,7 +156,8 @@ function applyInputStyles(isInternalUrl) {
 function checkRadioBasedOnRule(visitUrl, supportedTypes) {
     for (var i = 0; i < supportedTypes.length; i++) {
         userPref = resources.getUserPref(visitUrl, supportedTypes[i]);
-        $('input#radio-' + supportedTypes[i] + "-" + userPref).iCheck('check');
+        if (!string.getUserAgentCustom().test(userPref))
+            $('input#radio-' + supportedTypes[i] + "-" + userPref).iCheck('check');
     }
 }
 

@@ -22,11 +22,11 @@ resources.setClearCacheOnExit = function(value) {
 }
 
 resources.getRulesSet = function() {
-	return localStorage[rulesSetName].split(",");
+    return localStorage[rulesSetName].split(",")
 }
 
 resources.setRulesSet = function(value) {
-	localStorage[rulesSetName] = value
+    localStorage[rulesSetName] = value
 }
 
 resources.sortBasedOnUrl = function(array){

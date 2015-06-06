@@ -1,52 +1,54 @@
 <html>
-<head>
-    <title>Cookie cleaner options</title>
-    <link rel="stylesheet" type="text/css" href="css/options.css"/>    
-</head>
+    <head>
+        <title>Cookie cleaner options</title>
+        <link rel="stylesheet" type="text/css" href="css/options.css"/>    
+    </head>
+    <body>
+        <h1><img src="ico/cookies128.png" width="36px" height="36px"></img>&nbsp Cookie cleaner</h1>
+        <div class="tabs">
+            <div class="tab">
+               <input type="radio" id="tab-1" name="tab-group-1" checked>
+               <label for="tab-1">Privacy</label>
+               
+                <div class="content">
+                    <p>
+                        Clear cache after <input id="autoClearCacheField" class="numeric" type="text" name="mins" min="0"/> 
+                        minute(s). (Psst! 0 to disable it)
+                    </p>
+                    <p>
+                        <input type="checkbox" id="clearCacheOnExitOption"> Clear cache on exit 
+                    </p>
 
-<body>
-    <h1><img src="ico/cookies128.png" width="36px" height="36px"></img>&nbsp Cookie cleaner</h1>
-    <div class="tabs">
-        <div class="tab">
-           <input type="radio" id="tab-1" name="tab-group-1" checked>
-           <label for="tab-1">Privacy</label>
-           
-            <div class="content">
-                <p>
-                    Clear cache after <input id="autoClearCacheField" class="numeric" type="text" name="mins" min="0"/> 
-                    minute(s). (Psst! 0 to disable it)
-                </p>
-                <p>
-                    <input type="checkbox" id="clearCacheOnExitOption"> Clear cache on exit 
-                </p>
-
-                <button id="saveGeneralSettingsButton">Save</button>
-                <h2>Import/Export</h2>
-                <button id="importSettingButton">Import settings</button>&nbsp&nbsp&nbsp&nbsp
-                <button id="exportSettingButton">Export settings</button>
-                <div id="generalSettingStatusDiv"></div>
-            </div> 
+                    <button id="saveGeneralSettingsButton">Save</button>
+                    <h2>Import/Export</h2>
+                    <button id="importSettingButton">Import settings</button>
+                    <input type="file" id="importSettingInputFile" style="display: none;">&nbsp&nbsp&nbsp&nbsp
+                    <button id="exportSettingButton">Export settings</button>
+                    <div id="generalSettingStatusDiv"></div>
+                </div> 
+            </div>
+        
+            <div class="tab">
+               <input type="radio" id="tab-2" name="tab-group-1">
+               <label for="tab-2">Manage rules</label>
+               
+                <div class="content">
+                    <textarea rows="50" cols="70" id="rulesSet" style="resize:none;display: table-row;"></textarea>
+                    <br/>
+                    <br/>
+                    <button id="saveRulesSetButton">Save</button>
+                    <div id="rulesSetStatusDiv"></div>
+                </div> 
+            </div>
         </div>
-    
-        <div class="tab">
-           <input type="radio" id="tab-2" name="tab-group-1">
-           <label for="tab-2">Manage rules</label>
-           
-            <div class="content">
-                <textarea rows="50" cols="70" id="rulesSet" style="resize:none;display: table-row;"></textarea>
-                <br/>
-                <button id="saveRulesSetButton">Save</button>
-                <div id="rulesSetStatusDiv"></div>
-            </div> 
-        </div>
-    </div>
-</body>
+    </body>
 
-<script src="js/lib/jquery-2.0.3.min.js"></script>
-<script src="js/resources.js"></script>
-<script src="js/strings.js"></script>
-<script src="js/options/validate.js"></script>
-<script src="js/options/saveOptions.js"></script>
+    <script src="js/lib/jquery-2.0.3.min.js"></script>
+    <script src="js/resources.js"></script>
+    <script src="js/strings.js"></script>
+    <script src="js/rulesSetHelper.js"></script>
+    <script src="js/options/validate.js"></script>
+    <script src="js/options/saveOptions.js"></script>
 
-<script src="js/cleanCache.js"></script>
+    <script src="js/cleanCache.js"></script>
 </html>

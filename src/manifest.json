@@ -18,6 +18,7 @@
         "scripts": [
             "js/resources.js",
             "js/strings.js",
+            "js/rulesSetHelper.js",
             "js/firstRun.js", 
             "js/cookieCleaner.js",
             "js/cleanCache.js",
@@ -35,6 +36,7 @@
         "tabs", "*://*/*",
         "cookies", "*://*/*",
         "alarms",
-        "webRequest", "webRequestBlocking", "*://*/*"
+        "webRequest", "webRequestBlocking", "*://*/*",
+        "downloads"
     ]
 }
