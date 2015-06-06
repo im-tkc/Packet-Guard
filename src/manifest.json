@@ -5,7 +5,10 @@
     "description": "Making web surfing more private.",
     "version": "0.5",
     "options_page": "options.html",
-    
+    "options_ui": {
+        "page": "options.html",
+        "chrome_style": true
+    },
     "icons": {
         "48": "ico/packetGuard48.png",
         "128": "ico/packetGuard128.png" 

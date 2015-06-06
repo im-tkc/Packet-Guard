@@ -1,6 +1,7 @@
 var clearCacheField = "autoClearCacheField";
 var checkBoxClearCacheOnExit = "clearCacheOnExitOption";
 var rulesSetField = "rulesSet";
+var savedNotification = "Options saved";
 
 main();
 
@@ -32,7 +33,7 @@ function saveGeneralSettings() {
     resources.setClearCacheOnExit(getIsChecked(checkBoxClearCacheOnExit));
 
     cacheCleaner.createTimer(parseInt(resources.getClearCacheMins()));
-    visualFeedback("generalSettingStatusDiv");
+    visualFeedback("notice", savedNotification);
 }
 
 function restoreRulesSet() {
@@ -51,7 +52,7 @@ function saveRulesSet() {
     setValueById(rulesSetField, rulesSet.join("\n"));
     resources.setRulesSet(rulesSet);
 
-    visualFeedback("rulesSetStatusDiv");
+    visualFeedback("notice", savedNotification);
 }
 
 function getValueById(elementId) {
@@ -94,22 +95,37 @@ function uploadFiles(evt) {
 
                 var isValid = validateImportedData(clearCacheMins, clearCacheOnExit);
                 rulesSet = rulesSetHelper.formatRuleSet(rulesSet);
-                
-                if (isValid) {
-                    resources.setClearCacheMins(clearCacheMins);
-                    resources.setClearCacheOnExit(clearCacheOnExit);
-                    resources.setRulesSet(rulesSet);
+                var promptMsg = "Are you sure you want to override existing data with imported data? "
+                            + "The extension will restart after you have selected 'OK'.";
 
-                    cacheCleaner.createTimer(parseInt(resources.getClearCacheMins()));
-                    location.reload();
-                }
+                $.Zebra_Dialog(promptMsg, {
+                    'type':     'question',
+                    'title':    'Overwritting existing data?',
+                    'buttons':  [
+                                    {caption: 'Yes', callback: function() {
+                                        overrideData(isValid, clearCacheMins, clearCacheOnExit, rulesSet)
+                                    }},
+                                    {caption: 'No', callback: function() {}},
+                                ]
+                });
             } catch (e) {
-                alert("This is not a valid backup file. Please try again.");
-                document.getElementById(evt.srcElement.id).value = "";
-            } 
+                visualFeedback("error", "This is not a valid backup file. Please try again.");
+            }
 
+            document.getElementById(evt.srcElement.id).value = "";
         };
         reader.readAsText(file);
+    }
+}
+
+function overrideData(isValid, clearCacheMins, clearCacheOnExit, rulesSet) {
+    if (isValid) {
+        resources.setClearCacheMins(clearCacheMins);
+        resources.setClearCacheOnExit(clearCacheOnExit);
+        resources.setRulesSet(rulesSet);
+
+        chrome.runtime.reload();
+        window.close();
     }
 }
 
@@ -131,11 +147,20 @@ function exportSettings() {
     });
 }
 
-function visualFeedback(elementId) {
-    // Update status to let user know options were saved.
-    var status = document.getElementById(elementId);
-    status.innerHTML = "Options Saved.";
-    setTimeout(function() {
-        status.innerHTML = "";
-    }, 750);
+function visualFeedback(msgType, msg, title) {
+    title = (typeof title === "undefined") ? msg : title;
+    switch(msgType.toLowerCase()) {
+        case "notice":
+            $.growl.notice({ message: msg});
+            break;
+        case "warning":
+            $.growl.warning({message: msg});
+            break;
+        case "error":
+            $.growl.error({message: msg});
+            break;
+        default:
+            $.growl({ title: title, message: "The kitten is awake!" });
+            break;
+    }
 }

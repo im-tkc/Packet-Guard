@@ -16,6 +16,13 @@ input.numeric {
     width: 5em;
 }
 
+textarea#rulesSet {
+    resize:none;
+    font-family: Courier, "Courier New", Monospace;
+    display: block;
+    overflow: visible;
+}
+
 /*For tab configuration*/
 .tabs {
     position: relative;
@@ -55,7 +62,7 @@ input.numeric {
     margin-bottom: 15px;
     border: 1px solid #1779E8;
     clear: both;
-    width: 99%;
+    width: 95%;
 }
 
 [type=radio]:checked ~ label {

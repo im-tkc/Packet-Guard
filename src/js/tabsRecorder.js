@@ -10,6 +10,10 @@ tabsRecorder.bindListener = function() {
         });
     });
 
+    chrome.tabs.onCreated.addListener(function(tab) {
+        tabsArray[tab.id] = tab;
+    });
+
     chrome.tabs.onUpdated.addListener(function onUpdatedListener(tabId, changeInfo, tab) {
         tabsArray[tab.id] = tab;
     });

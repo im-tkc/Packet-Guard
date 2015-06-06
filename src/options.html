@@ -1,7 +1,9 @@
 <html>
     <head>
         <title>Packet Guard options</title>
-        <link rel="stylesheet" type="text/css" href="css/options.css"/>    
+        <link rel="stylesheet" type="text/css" href="css/options.css"/>
+        <link rel="stylesheet" type="text/css" href="css/lib/jquery.growl.css"/>
+        <link rel="stylesheet" type="text/css" href="css/lib/flat/zebra_dialog.css"/>
     </head>
     <body>
         <h1><img src="ico/packetGuard128.png" width="36px" height="36px"></img>&nbsp Packet Guard</h1>
@@ -24,7 +26,6 @@
                     <button id="importSettingButton">Import settings</button>
                     <input type="file" id="importSettingInputFile" style="display: none;">&nbsp&nbsp&nbsp&nbsp
                     <button id="exportSettingButton">Export settings</button>
-                    <div id="generalSettingStatusDiv"></div>
                 </div> 
             </div>
         
@@ -33,11 +34,10 @@
                <label for="tab-2">Manage rules</label>
                
                 <div class="content">
-                    <textarea rows="50" cols="70" id="rulesSet" style="resize:none;display: table-row;"></textarea>
+                    <textarea rows="40" cols="70" id="rulesSet"></textarea>
                     <br/>
                     <br/>
                     <button id="saveRulesSetButton">Save</button>
-                    <div id="rulesSetStatusDiv"></div>
                 </div> 
             </div>
 
@@ -49,7 +49,14 @@
                     <h2>Packet Guard 0.5</h2>
                     <p>
                         Packet Guard will be a free, no-ads extension. If you like this extension, please 
-                        show your support by <a href="#">donation</a>. Your kind guesture will be greatly appreciated.
+                        show your support through <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TP4ADQC438224">(PayPal) donation</a>. Your kind guesture will be greatly appreciated.
+                    </p>
+
+                    <h2>Support & Documentation</h2>
+                    <p>
+                        Bug report? Suggestions? Visit 
+                        <a href="https://github.com/im-tkc/Packet-Guard">extension homepage</a> 
+                        for more information.
                     </p>
                 </div> 
             </div>
@@ -57,6 +64,8 @@
     </body>
 
     <script src="js/lib/jquery-2.0.3.min.js"></script>
+    <script src="js/lib/jquery.growl.js"></script>
+    <script src="js/lib/zebra_dialog.js"></script>
     <script src="js/resources.js"></script>
     <script src="js/strings.js"></script>
     <script src="js/inputHelper.js"></script>
