@@ -86,7 +86,7 @@ CCleaner.applyRuleSet = function(functionPointer, listOfAllCookiesDomain, listOf
 
 CCleaner.removeAllInstance = function(array, itemToRemove) {
     var filteredArray = array.filter(function(item){
-        return typeof item == 'string' && item.indexOf(itemToRemove) == -1;
+        return typeof item == 'string' && item.indexOf(itemToRemove) != 0;
     });
     
     return filteredArray;

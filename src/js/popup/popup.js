@@ -13,7 +13,10 @@ function main() {
         var urlHTMLTag = document.getElementById("activeUrl");
         urlHTMLTag.innerHTML = visitUrl;
         
-        var isInternalUrl = (activeUrl.startsWith(string.CHROME_WEBSTORE) || string.INTERNAL_URL.test(activeUrl))
+        var isOpera = (navigator.userAgent.indexOf("OPR") != -1);
+        var isWebstore = ((activeUrl.startsWith(string.CHROME_WEBSTORE) && !isOpera)
+            || (activeUrl.startsWith(string.OPERA_WEBSTORE) && isOpera));
+        var isInternalUrl = (isWebstore || string.INTERNAL_URL.test(activeUrl))
                             ? true
                             : false;
 
