@@ -5,9 +5,10 @@ rulesSetHelper.formatRuleSet = function(rulesSet) {
     rulesSet = rulesSetHelper.sanitizeRulesSet(rulesSet);
     var isGlobalRulesSet = rulesSetHelper.checkIfGlobalRuleExist(rulesSet);
     rulesSet = rulesSetHelper.addNeccessaryGlobalRule(isGlobalRulesSet, rulesSet);
+    rulesSet = rulesSetHelper.removeOldUserPref(rulesSet);
     rulesSet = rulesSetHelper.sortBasedOnUrl(rulesSet);
     rulesSet = rulesSetHelper.removeDuplicateRulesSet(rulesSet);
-
+    
     return rulesSet;
 };
 
@@ -111,6 +112,24 @@ rulesSetHelper.removeDuplicateRulesSet = function(rulesSet) {
     return rulesSet.filter(function(value, index, self) { 
         return self.indexOf(value) === index;
     });
+};
+
+rulesSetHelper.removeOldUserPref = function(rulesSet) {
+    var oldRulesSet = resources.getRulesSet();
+    var newRules = inputHelper.diffArray(rulesSet, oldRulesSet);
+
+    for (var i=0; i<newRules.length; i++) {
+        var rule = inputHelper.splitEachRule(newRules[i]);
+        var searchTerm = [rule[string.RULE_URL_POS], rule[string.RULE_PREF_TYPE_POS]].join(" ");
+        var searchResult = inputHelper.findMatchInArray(oldRulesSet, searchTerm);
+
+        for (var j=0; j<searchResult.length; j++) {
+            inputHelper.removeAllInstance(rulesSet, searchResult[j]);
+        }
+    }
+
+    rulesSet.concat(newRules);
+    return rulesSet;
 };
 
 rulesSetHelper.editBasedOnUserPref = function(requestHeader, pos, visitUrl, rulePrefType, stringForBlock, stringForAllow) {
