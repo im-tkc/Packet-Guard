@@ -9,7 +9,7 @@ function main() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         var activeUrl = tabs[0].url;
     
-        var visitUrl = activeUrl.replace(/^.*:\/\//g, '').split('/')[0];
+        var visitUrl = inputHelper.getDomainOnly(activeUrl);
         var urlHTMLTag = document.getElementById("activeUrl");
         urlHTMLTag.innerHTML = visitUrl;
         

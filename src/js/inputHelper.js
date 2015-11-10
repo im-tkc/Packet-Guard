@@ -30,3 +30,7 @@ inputHelper.findMatchInArray = function(array, match) {
         }
     });
 }
+
+inputHelper.getDomainOnly = function(url) {
+    return url.replace(/^.*:\/\//g, '').split('/')[0];
+}

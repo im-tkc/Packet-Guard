@@ -26,6 +26,7 @@
             "js/strings.js",
             "js/inputHelper.js",
             "js/rulesSetHelper.js",
+            "js/ruleObject.js",
             "js/firstRun.js", 
             "js/cookieCleaner.js",
             "js/cleanCache.js",

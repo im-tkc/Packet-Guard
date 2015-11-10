@@ -143,7 +143,7 @@ function exportSettings() {
     var url = 'data:text/x-json;base64,' + btoa(jsonData);
     chrome.downloads.download({
         url: url,
-        filename: 'cookieCleaner-all-data.txt'
+        filename: 'packetGuard-all-data.txt'
     });
 }
 

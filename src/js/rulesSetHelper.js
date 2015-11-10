@@ -1,5 +1,6 @@
 function RuleSet() {}
 rulesSetHelper = RuleSet.prototype;
+rulesSetHelper.RULE_POS = 0;
 
 rulesSetHelper.formatRuleSet = function(rulesSet) {
     rulesSet = rulesSetHelper.sanitizeRulesSet(rulesSet);
@@ -18,10 +19,13 @@ rulesSetHelper.sanitizeRulesSet = function(rulesSetArray) {
     for (var i=0; i < array.length; i++) {
         if (array[i].startsWith("#")) { continue; }
 
-        ruleComponents = inputHelper.splitEachRule(array[i]);
-        if (array[i] && ruleComponents.length != string.RULE_LENGTH) { array.splice(i, 1); }
-
-        var isValidRule = [false, false];
+        var ruleComponents = inputHelper.splitEachRule(array[i]);
+        var isValidRuleLength = ruleComponents.length == string.RULE_LENGTH;
+        var isCookieRule = (ruleComponents[string.RULE_PREF_TYPE_POS].indexOf(string.getCookie()) == 0) 
+            && (ruleComponents.length == string.RULE_LENGTH - 1);
+        if (array[i] && !(isValidRuleLength || isCookieRule)) { array.splice(i, 1); --i; continue; }
+        
+        var isValidRule = [false, false, false];
         var url = ruleComponents[string.RULE_URL_POS];
         if (url.match(/^(https?:\/\/)?[\S].*/)) {
             url = url.replace(/https?:\/\//g, "");
@@ -33,8 +37,10 @@ rulesSetHelper.sanitizeRulesSet = function(rulesSetArray) {
         }
 
         isValidRule[1] = this.validateUserOptionsAndType(ruleComponents);
+        isValidRule[2] = this.validateWhichParty(isCookieRule, isValidRuleLength, ruleComponents);
+        
 
-        if (isValidRule.indexOf(false) != -1) { array.splice(i, 1); }
+        if (isValidRule.indexOf(false) != -1) { array.splice(i, 1); --i;}
     }
 
     return array;
@@ -59,6 +65,16 @@ rulesSetHelper.validateUserOptionsAndType = function(ruleComponents) {
 
     return validRule;
 };
+
+rulesSetHelper.validateWhichParty = function(isCookieRule, isValidRuleLength, ruleComponents) {
+    var validRule = false;
+    if (isCookieRule || (isValidRuleLength 
+        && string.getSupportedParties().indexOf(ruleComponents[string.RULE_WHICH_PARTY_POS]) != -1)) {
+        validRule = true;
+    }
+
+    return validRule;
+}
 
 rulesSetHelper.checkIfGlobalRuleExist = function(rulesSetArray) {
     var isGlobalRulesSet = [false, false, false, false];
@@ -132,50 +148,77 @@ rulesSetHelper.removeOldUserPref = function(rulesSet) {
     return rulesSet;
 };
 
-rulesSetHelper.editBasedOnUserPref = function(requestHeader, pos, visitUrl, rulePrefType, stringForBlock, stringForAllow) {
+rulesSetHelper.editBasedOnUserPref = function(requestHeader, pos, visitUrl, packetUrl, rulePrefType, stringForBlock, stringForAllow) {
     var newHeader = requestHeader;
-    var userPref = rulesSetHelper.getUserPref(visitUrl, rulePrefType);
-    switch (userPref) {
-        case stringForBlock:
+    var myRuleObject = rulesSetHelper.getRuleObject(visitUrl, rulePrefType);
+    if ((packetUrl == visitUrl) && !myRuleObject.isUserPrefUpdated) {
+        if (myRuleObject.firstPartyUserPref == stringForBlock) {
             newHeader.splice(pos, 1);
-            break;
-        case stringForAllow:
-            break;
-        default:
-            break;
+            myRuleObject.isUserPrefUpdated = true;
+        } else if (myRuleObject.firstPartyUserPref == stringForAllow) {
+            myRuleObject.isUserPrefUpdated = true;
+        }
     }
+
+    if ((packetUrl != visitUrl) && !myRuleObject.isUserPrefUpdated) {
+        if (myRuleObject.thirdPartyUserPref == stringForBlock) {
+            newHeader.splice(pos, 1);
+            myRuleObject.isUserPrefUpdated = true;
+        } else if (myRuleObject.thirdPartyUserPref == stringForAllow) {
+            myRuleObject.isUserPrefUpdated = true;
+        }
+    }
+
+    if (rulePrefType.localeCompare(string.getUserAgent()) == 0)
+        userAgent.configureUserAgent(myRuleObject, rulePrefType, newHeader, visitUrl, packetUrl, pos);
+    else if (rulePrefType.localeCompare(string.getReferer()) == 0)
+        hReferer.configureReferer(myRuleObject, rulePrefType, newHeader, visitUrl, packetUrl, pos);
 
     return newHeader;
 };
 
-rulesSetHelper.getUserPref = function(visitUrl, rulePrefType) {
-    rulesSet = resources.getRulesSet();
-    userPref = rulesSetHelper.getDefaultUserPref(rulePrefType);
+rulesSetHelper.getRuleObject = function(visitUrl, rulePrefType) {
+    var rulesSet = resources.getRulesSet();
+    var myRuleObject = new RuleObject();
 
     for (var i = (rulesSet.length - 1); i >= 0; i--) {
         rule = inputHelper.splitEachRule(rulesSet[i]);
 
-        if (visitUrl.indexOf(rule[string.RULE_URL_POS]) != -1 
-            && rule[string.RULE_PREF_TYPE_POS] == rulePrefType) {
+        var isVisitUrlOrAnyUrl = visitUrl.indexOf(rule[string.RULE_URL_POS]) != -1 || rule[string.RULE_URL_POS] == '*';
+        if (isVisitUrlOrAnyUrl && (rule[string.RULE_PREF_TYPE_POS] == rulePrefType)) {
             userPref = rule[string.RULE_USER_PREF_POS];
-            break;
+            userPartyPref = rule[string.RULE_WHICH_PARTY_POS];
+
+            if ((userPartyPref == string.getFirstParty()) && !myRuleObject.isFirstPartyUserPrefSet) {
+                myRuleObject.firstPartyUserPref = userPref;
+                myRuleObject.isFirstPartyUserPrefSet = true;
+            }
+            if ((userPartyPref == string.getThirdParty()) && !myRuleObject.isThirdPartyUserPrefSet) {
+                myRuleObject.thirdPartyUserPref = userPref;
+                myRuleObject.isThirdPartyUserPrefSet = true;
+            }
+            if (userPartyPref == string.getAllParty()) {
+                if (!myRuleObject.isFirstPartyUserPrefSet) {
+                    myRuleObject.firstPartyUserPref = userPref;
+                    myRuleObject.isFirstPartyUserPrefSet = true;
+                }
+                if (!myRuleObject.isThirdPartyUserPrefSet) {
+                    myRuleObject.thirdPartyUserPref = userPref;
+                    myRuleObject.isThirdPartyUserPrefSet = true;
+                }
+            }
+        
+            if (myRuleObject.isThirdPartyUserPrefSet && myRuleObject.isFirstPartyUserPrefSet) { break; }
+                
         }
     }
 
-    return userPref;
+    return myRuleObject;
 };
 
-rulesSetHelper.getDefaultUserPref = function(rulePrefType) {
-    rulesSet = resources.getRulesSet();
-    userPref = "";
+rulesSetHelper.setCustomField = function(regex, userPref, httpHeader, pos) {
+    if (regex.test(userPref))
+        httpHeader[pos].value = userPref.substring(1, userPref.length - 1);
 
-    for (var i = 0; i < rulesSet.length; i++) {
-        rule = inputHelper.splitEachRule(rulesSet[i]);
-        if (rule[string.RULE_URL_POS] == string.RULE_ANY_URL && rule[string.RULE_PREF_TYPE_POS] == rulePrefType) {
-            userPref = rule[string.RULE_USER_PREF_POS];
-            break;
-        }
-    }
-
-    return userPref;
-};
+    return httpHeader;
+}
