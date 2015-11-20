@@ -52,4 +52,4 @@ string.getUserAgentCustom = function() { a=string.getSupportedOptions(); return 
 
 string.getFirstParty = function() {a=string.getSupportedParties(); return a[0]; }
 string.getThirdParty = function() {a=string.getSupportedParties(); return a[1]; }
-string.getAllParty = function() {a=string.getSupportedParties(); return a[2]; }
+string.getAllParties = function() {a=string.getSupportedParties(); return a[2]; }

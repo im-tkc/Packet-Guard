@@ -25,9 +25,9 @@ userAgent.configureUserAgent = function(myRuleObject, userAgent, httpHeader, tab
     }
 
     if((!myRuleObject.isUserPrefUpdated) && (packetUrl == tabUrl))
-        httpHeader = rulesSetHelper.setCustomField(string.getUserAgentCustom(), myRuleObject.firstPartyUserPref, httpHeader, pos);
+        httpHeader = rulesSetHelper.setCustomField(string.getUserAgentCustom(), myRuleObject.firstPartyUserPref, httpHeader, pos, myRuleObject);
     if((!myRuleObject.isUserPrefUpdated) && (packetUrl != tabUrl))
-        httpHeader = rulesSetHelper.setCustomField(string.getUserAgentCustom(), myRuleObject.thirdPartyUserPref, httpHeader, pos);
+        httpHeader = rulesSetHelper.setCustomField(string.getUserAgentCustom(), myRuleObject.thirdPartyUserPref, httpHeader, pos, myRuleObject);
 
     return httpHeader;
 };

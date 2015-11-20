@@ -97,7 +97,7 @@ rulesSetHelper.addNeccessaryGlobalRule = function(isGlobalRulesSet, rulesSetArra
 
     while (isGlobalRulesSet.indexOf(false) != -1) {
         var idx = isGlobalRulesSet.indexOf(false);
-        var rule = [string.RULE_ANY_URL, supportedTypes[idx], string.DEFAULT_USER_PREF[idx]].join(" ");
+        var rule = [string.RULE_ANY_URL, supportedTypes[idx], string.DEFAULT_USER_PREF[idx], string.getAllParties()].join(" ");
         rulesSetArray.push(rule);
         isGlobalRulesSet[idx] = true;
     }
@@ -151,7 +151,9 @@ rulesSetHelper.removeOldUserPref = function(rulesSet) {
 rulesSetHelper.editBasedOnUserPref = function(requestHeader, pos, visitUrl, packetUrl, rulePrefType, stringForBlock, stringForAllow) {
     var newHeader = requestHeader;
     var myRuleObject = rulesSetHelper.getRuleObject(visitUrl, rulePrefType);
-    if ((packetUrl == visitUrl) && !myRuleObject.isUserPrefUpdated) {
+    var isFirstPartyPacket = packetUrl == visitUrl;
+
+    if (isFirstPartyPacket && !myRuleObject.isUserPrefUpdated) {
         if (myRuleObject.firstPartyUserPref == stringForBlock) {
             newHeader.splice(pos, 1);
             myRuleObject.isUserPrefUpdated = true;
@@ -160,7 +162,7 @@ rulesSetHelper.editBasedOnUserPref = function(requestHeader, pos, visitUrl, pack
         }
     }
 
-    if ((packetUrl != visitUrl) && !myRuleObject.isUserPrefUpdated) {
+    if (!isFirstPartyPacket && !myRuleObject.isUserPrefUpdated) {
         if (myRuleObject.thirdPartyUserPref == stringForBlock) {
             newHeader.splice(pos, 1);
             myRuleObject.isUserPrefUpdated = true;
@@ -197,7 +199,7 @@ rulesSetHelper.getRuleObject = function(visitUrl, rulePrefType) {
                 myRuleObject.thirdPartyUserPref = userPref;
                 myRuleObject.isThirdPartyUserPrefSet = true;
             }
-            if (userPartyPref == string.getAllParty()) {
+            if (userPartyPref == string.getAllParties()) {
                 if (!myRuleObject.isFirstPartyUserPrefSet) {
                     myRuleObject.firstPartyUserPref = userPref;
                     myRuleObject.isFirstPartyUserPrefSet = true;
@@ -216,9 +218,11 @@ rulesSetHelper.getRuleObject = function(visitUrl, rulePrefType) {
     return myRuleObject;
 };
 
-rulesSetHelper.setCustomField = function(regex, userPref, httpHeader, pos) {
-    if (regex.test(userPref))
+rulesSetHelper.setCustomField = function(regex, userPref, httpHeader, pos, myRuleObject) {
+    if (regex.test(userPref)) {
         httpHeader[pos].value = userPref.substring(1, userPref.length - 1);
+        myRuleObject.isUserPrefUpdated = true;
+    }
 
     return httpHeader;
 }

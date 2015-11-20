@@ -15,21 +15,23 @@ hReferer.performHTTPRefererModification = function(requestHeaders, pos, tabUrl, 
 };
 
 hReferer.configureReferer = function(myRuleObject, referer, httpHeader, tabUrl, packetUrl, pos) {
-    if ((myRuleObject.firstPartyUserPref == string.getRefererDomainOnly()) && (packetUrl == tabUrl) && !myRuleObject.isFirstPartyUserPrefUpdated) {
+    var isFirstPartyPacket = packetUrl == tabUrl;
+
+    if ((myRuleObject.firstPartyUserPref == string.getRefererDomainOnly()) && isFirstPartyPacket && !myRuleObject.isUserPrefUpdated) {
         refererUrl = httpHeader[pos].value;
         httpHeader[pos].value = inputHelper.getDomainOnly(refererUrl);
-        myRuleObject.isFirstPartyUserPrefUpdated = true;
+        myRuleObject.isUserPrefUpdated = true;
     }
-    if ((myRuleObject.thirdPartyUserPref == string.getRefererDomainOnly()) && (packetUrl != tabUrl) && !myRuleObject.isThirdPartyUserPrefUpdated) {
+    if ((myRuleObject.thirdPartyUserPref == string.getRefererDomainOnly()) && !isFirstPartyPacket && !myRuleObject.isUserPrefUpdated) {
         refererUrl = httpHeader[pos].value;
         httpHeader[pos].value = inputHelper.getDomainOnly(refererUrl);
-        myRuleObject.isThirdPartyUserPrefUpdated = true;
+        myRuleObject.isUserPrefUpdated = true;
     }
 
-    if(!myRuleObject.isUserPrefUpdated && (packetUrl == tabUrl))
-        httpHeader = rulesSetHelper.setCustomField(string.getRefererCustom(), myRuleObject.firstPartyUserPref, httpHeader, pos);
-    if (!myRuleObject.isUserPrefUpdated && (packetUrl != tabUrl))
-        httpHeader = rulesSetHelper.setCustomField(string.getRefererCustom(), myRuleObject.thirdPartyUserPref, httpHeader, pos);
+    if(!myRuleObject.isUserPrefUpdated && isFirstPartyPacket)
+        httpHeader = rulesSetHelper.setCustomField(string.getRefererCustom(), myRuleObject.firstPartyUserPref, httpHeader, pos, myRuleObject);
+    if (!myRuleObject.isUserPrefUpdated && !isFirstPartyPacket)
+        httpHeader = rulesSetHelper.setCustomField(string.getRefererCustom(), myRuleObject.thirdPartyUserPref, httpHeader, pos, myRuleObject);
 
     return httpHeader;
 };
