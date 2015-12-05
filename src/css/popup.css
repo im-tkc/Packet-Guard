@@ -31,3 +31,8 @@ table#table {
     display: table-row; 
     width: inherit;
 }
+
+/*Specific CSS for ddSlick**/
+.dd-selected-text, .dd-option-text {
+    font-size: 10px;
+}

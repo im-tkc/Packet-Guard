@@ -6,7 +6,7 @@ rulesSetHelper.formatRuleSet = function(rulesSet) {
     rulesSet = rulesSetHelper.sanitizeRulesSet(rulesSet);
     var isGlobalRulesSet = rulesSetHelper.checkIfGlobalRuleExist(rulesSet);
     rulesSet = rulesSetHelper.addNeccessaryGlobalRule(isGlobalRulesSet, rulesSet);
-    rulesSet = rulesSetHelper.removeOldUserPref(rulesSet);
+    rulesSet = rulesSetHelper.updateUserPref(rulesSet);
     rulesSet = rulesSetHelper.sortBasedOnUrl(rulesSet);
     rulesSet = rulesSetHelper.removeDuplicateRulesSet(rulesSet);
     
@@ -130,23 +130,39 @@ rulesSetHelper.removeDuplicateRulesSet = function(rulesSet) {
     });
 };
 
-rulesSetHelper.removeOldUserPref = function(rulesSet) {
+rulesSetHelper.updateUserPref = function(rulesSet) {
     var oldRulesSet = resources.getRulesSet();
     var newRules = inputHelper.diffArray(rulesSet, oldRulesSet);
 
     for (var i=0; i<newRules.length; i++) {
         var rule = inputHelper.splitEachRule(newRules[i]);
-        var searchTerm = [rule[string.RULE_URL_POS], rule[string.RULE_PREF_TYPE_POS]].join(" ");
-        var searchResult = inputHelper.findMatchInArray(oldRulesSet, searchTerm);
+        var searchTerm = [rule[string.RULE_URL_POS], rule[string.RULE_PREF_TYPE_POS], rule[string.RULE_USER_PREF_POS]].join(" ");
+        var searchResults = inputHelper.findMatchInArray(oldRulesSet, searchTerm);
 
-        for (var j=0; j<searchResult.length; j++) {
-            inputHelper.removeAllInstance(rulesSet, searchResult[j]);
+        for (var j=0; j<searchResults.length; j++) {
+            rulesSet = inputHelper.removeAllInstance(rulesSet, searchResults[j]);
+            rulesSet = rulesSetHelper.changeToAllPartiesIfSameUserPref(searchResults[j], rule, i, rulesSet);
         }
     }
 
-    rulesSet.concat(newRules);
     return rulesSet;
 };
+
+rulesSetHelper.changeToAllPartiesIfSameUserPref = function(searchResult, newRule, newRulePos, rulesSet) {
+    var oldRule = inputHelper.splitEachRule(searchResult);
+    var ALL_PARTY_POS = 2;
+    var isSameUserPref = newRule[string.RULE_USER_PREF_POS] == oldRule[string.RULE_USER_PREF_POS];
+    var isDiffParty = string.getSupportedParties().indexOf(newRule[string.RULE_WHICH_PARTY_POS]) != ALL_PARTY_POS 
+                        && string.getSupportedParties().indexOf(oldRule[string.RULE_WHICH_PARTY_POS]) != ALL_PARTY_POS;
+
+    if (isSameUserPref && isDiffParty) {
+        var posInRuleSet = rulesSet.indexOf(newRule.join(" "));
+        newRule[string.RULE_WHICH_PARTY_POS] = string.getAllParties();
+        rulesSet[posInRuleSet] = newRule.join(" ");
+    }
+
+    return rulesSet;
+}
 
 rulesSetHelper.editBasedOnUserPref = function(requestHeader, pos, visitUrl, packetUrl, rulePrefType, stringForBlock, stringForAllow) {
     var newHeader = requestHeader;
@@ -186,8 +202,7 @@ rulesSetHelper.getRuleObject = function(visitUrl, rulePrefType) {
     for (var i = (rulesSet.length - 1); i >= 0; i--) {
         rule = inputHelper.splitEachRule(rulesSet[i]);
 
-        var isVisitUrlOrAnyUrl = visitUrl.indexOf(rule[string.RULE_URL_POS]) != -1 || rule[string.RULE_URL_POS] == '*';
-        if (isVisitUrlOrAnyUrl && (rule[string.RULE_PREF_TYPE_POS] == rulePrefType)) {
+        if (rulesSetHelper.getIsVisitUrlOrAnyUrl(visitUrl, rule) && (rule[string.RULE_PREF_TYPE_POS] == rulePrefType)) {
             userPref = rule[string.RULE_USER_PREF_POS];
             userPartyPref = rule[string.RULE_WHICH_PARTY_POS];
 
@@ -217,6 +232,27 @@ rulesSetHelper.getRuleObject = function(visitUrl, rulePrefType) {
 
     return myRuleObject;
 };
+
+rulesSetHelper.getCookieUserPref = function(visitUrl) {
+    var rulesSet = resources.getRulesSet();
+    var userPref = "";
+
+    for (var i = (rulesSet.length - 1); i >= 0; i--) {
+        var rule = inputHelper.splitEachRule(rulesSet[i]);
+        
+        if (rulesSetHelper.getIsVisitUrlOrAnyUrl(visitUrl, rule)
+            && rule[string.RULE_PREF_TYPE_POS] == string.getCookie()) {
+            userPref = rule[string.RULE_USER_PREF_POS];
+            break;
+        }
+    }
+
+    return userPref;
+}
+
+rulesSetHelper.getIsVisitUrlOrAnyUrl = function(visitUrl, rule) {
+    return visitUrl.indexOf(rule[string.RULE_URL_POS]) != -1 || rule[string.RULE_URL_POS] == string.RULE_ANY_URL;
+}
 
 rulesSetHelper.setCustomField = function(regex, userPref, httpHeader, pos, myRuleObject) {
     if (regex.test(userPref)) {

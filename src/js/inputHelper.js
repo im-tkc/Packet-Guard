@@ -34,3 +34,7 @@ inputHelper.findMatchInArray = function(array, match) {
 inputHelper.getDomainOnly = function(url) {
     return url.replace(/^.*:\/\//g, '').split('/')[0];
 }
+
+inputHelper.endsWith = function(stringToCompare, suffix) {
+    return stringToCompare.indexOf(suffix, stringToCompare.length - suffix.length) !== -1;
+};

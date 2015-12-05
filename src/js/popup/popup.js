@@ -10,9 +10,6 @@ function main() {
         var activeUrl = tabs[0].url;
     
         var visitUrl = inputHelper.getDomainOnly(activeUrl);
-        var urlHTMLTag = document.getElementById("activeUrl");
-        urlHTMLTag.innerHTML = visitUrl;
-        
         var isOpera = (navigator.userAgent.indexOf("OPR") != -1);
         var isWebstore = ((activeUrl.startsWith(string.CHROME_WEBSTORE) && !isOpera)
             || (activeUrl.startsWith(string.OPERA_WEBSTORE) && isOpera));
@@ -20,14 +17,42 @@ function main() {
                             ? true
                             : false;
 
+        generateURLOptions(visitUrl);
         generateFields(visitUrl, isInternalUrl); 
     });
+}
+
+function generateURLOptions(visitUrl) {
+    var counter = 0;
+    var urlOptionsList = new Array();
+    for (var i=0; i < string.getSupportedParties().length; i++) {
+        var  urlOption = generateURLOption(visitUrl, i);
+        urlOptionsList.push(urlOption);
+    }
+
+    var jsonArray = JSON.parse(JSON.stringify(urlOptionsList));
+    var supportedTypes = string.getSupportedTypes();
+    $('#urlOptions').ddslick({
+        data: jsonArray,
+        defaultSelectedIndex: string.getSupportedParties().length - 1,
+        width: 200,
+        onSelected: function(data) { resetRadio(visitUrl, supportedTypes); }
+    });
+}
+
+function generateURLOption(visitUrl, counter) {
+    var jsonObject = new Object();
+    jsonObject.text = visitUrl + " - " + string.getSupportedParties()[counter];
+    jsonObject.value = counter + 1;
+
+    return jsonObject;
 }
 
 function generateFields(visitUrl, isInternalUrl) {
     var supportedTypes = string.getSupportedTypes();
     var supportedOptions = string.getSupportedOptions();
     var table = document.getElementById("table");
+    table.id = "prefType-table";
 
     for (var i=0; i < supportedTypes.length; i++) {
         var prefType = inputHelper.capitalizeFirstXLetters(supportedTypes[i], 1);
@@ -35,6 +60,7 @@ function generateFields(visitUrl, isInternalUrl) {
         generateLabelColumn(prefType, row);
         generateOptionsColumn(prefType, row, supportedOptions, i);
     }
+    
     applyInputStyles(isInternalUrl);
     checkRadioBasedOnRule(visitUrl, supportedTypes);
     createButtonEventHandler();
@@ -74,7 +100,7 @@ function generateOptionsColumn(prefType, row, supportedOptions, idx) {
 
 function applyInputStyles(isInternalUrl) {
     styleColour = "green";
-    $('input').each(function(){
+    $('#prefType-table input[type="radio"]').each(function(){
         var self = $(this),
         label = self.next(),
         label_text = label.text();
@@ -99,16 +125,50 @@ function applyInputStyles(isInternalUrl) {
     }
 }
 
+function resetRadio(visitUrl, supportedTypes) {
+    unbindCreateButtonEventHandler();
+    clearAllCheckedRadio();
+    checkRadioBasedOnRule(visitUrl, supportedTypes);
+    createButtonEventHandler();
+}
+
+function unbindCreateButtonEventHandler() {
+    $('#prefType-table input[type="radio"]').off('ifToggled');
+}
+
+function clearAllCheckedRadio() {
+    $('#prefType-table input[type="radio"]').each(function(){
+        $(this).iCheck("uncheck");
+    });
+}
+
 function checkRadioBasedOnRule(visitUrl, supportedTypes) {
     for (var i = 0; i < supportedTypes.length; i++) {
-        userPref = rulesSetHelper.getUserPref(visitUrl, supportedTypes[i]);
-        if (!string.getUserAgentCustom().test(userPref))
+        var ruleObject = rulesSetHelper.getRuleObject(visitUrl, supportedTypes[i]);
+
+        var urlAndSelectedPartyLabel = document.getElementsByClassName("dd-selected-text")[0];
+        var selectedParty = urlAndSelectedPartyLabel.innerHTML.split(" - ")[1];
+
+        var isAllPartiesUserPrefSame = (ruleObject.firstPartyUserPref === ruleObject.thirdPartyUserPref) 
+                                        && selectedParty == string.getAllParties();
+        var isFirstPartiesUserPref = selectedParty == string.getFirstParty();
+        var isThirdPartiesUserPref = selectedParty == string.getThirdParty();
+
+        if (supportedTypes[i] === string.getCookie()) {
+            var userPref = rulesSetHelper.getCookieUserPref(visitUrl);
             $('input#radio-' + supportedTypes[i] + "-" + userPref).iCheck('check');
+        }
+
+        if ((isAllPartiesUserPrefSame || isFirstPartiesUserPref) && !string.getUserAgentCustom().test(userPref)) {
+            $('input#radio-' + supportedTypes[i] + "-" + ruleObject.firstPartyUserPref).iCheck('check');
+        } else if (isThirdPartiesUserPref && !string.getUserAgentCustom().test(userPref)) {
+            $('input#radio-' + supportedTypes[i] + "-" + ruleObject.thirdPartyUserPref).iCheck('check');
+        }
     }
 }
 
 function createButtonEventHandler() {
-    $('input').on('ifChanged', function(event){
+    $('#prefType-table input[type="radio"]').on('ifToggled', function(event){
         var imgCommit = document.getElementById(imageCommitId);
         imgCommit.setAttribute("src", "ico/uncommitted.png");
     });
