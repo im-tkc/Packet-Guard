@@ -18,18 +18,32 @@ body{
 div.mainDiv {
     float: left;
     width: 100%;
+    height: 36px;
     display: table;
 }
 
 div.headerDiv {
     float: left;
     width: 50%;
+    height: inherit;
     display: table-row;
+    vertical-align: middle;
 }
 
 table#table {
     display: table-row; 
     width: inherit;
+}
+
+img.img-headerOptions {
+    position: relative; 
+    top: 50%; 
+    height: 25px;
+    width: 25px;
+    padding: 0px 2px;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
 }
 
 /*Specific CSS for ddSlick**/

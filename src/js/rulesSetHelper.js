@@ -7,6 +7,7 @@ rulesSetHelper.formatRuleSet = function(rulesSet) {
     var isGlobalRulesSet = rulesSetHelper.checkIfGlobalRuleExist(rulesSet);
     rulesSet = rulesSetHelper.addNeccessaryGlobalRule(isGlobalRulesSet, rulesSet);
     rulesSet = rulesSetHelper.updateUserPref(rulesSet);
+    rulesSet = rulesSetHelper.compactRulesSet(rulesSet);
     rulesSet = rulesSetHelper.sortBasedOnUrl(rulesSet);
     rulesSet = rulesSetHelper.removeDuplicateRulesSet(rulesSet);
     
@@ -17,7 +18,7 @@ rulesSetHelper.sanitizeRulesSet = function(rulesSetArray) {
     var array = rulesSetArray;
     
     for (var i=0; i < array.length; i++) {
-        if (array[i].startsWith("#")) { continue; }
+        if (array[i].startsWith(string.RULE_COMMENTED)) { continue; }
 
         var ruleComponents = inputHelper.splitEachRule(array[i]);
         var isValidRuleLength = ruleComponents.length == string.RULE_LENGTH;
@@ -163,6 +164,42 @@ rulesSetHelper.changeToAllPartiesIfSameUserPref = function(searchResult, newRule
 
     return rulesSet;
 }
+
+rulesSetHelper.compactRulesSet = function(rulesSet) {
+    var globalRulesSetLessURL = rulesSetHelper.getGlobalRulesSet(rulesSet, true);
+    var globalRulesSet = rulesSetHelper.getGlobalRulesSet(rulesSet, false);
+    var rulesSetLessGlobal = rulesSet;
+
+    for (var i = 0; i < globalRulesSetLessURL.length; i++) {
+        rulesSetLessGlobal = rulesSetLessGlobal.filter(function(value, index, self) {
+            var rule = inputHelper.splitEachRule(value);
+            if ((rule[string.RULE_URL_POS] === string.RULE_ANY_URL) || value.startsWith(string.RULE_COMMENTED))
+                return false; 
+            else
+                return !inputHelper.endsWith(value, globalRulesSetLessURL[i]);
+        });
+    }
+
+    rulesSet = globalRulesSet.concat(rulesSetLessGlobal);
+    return rulesSet;
+}
+
+rulesSetHelper.getGlobalRulesSet = function(rulesSet, isLessURL) {
+    var globalRulesSet = [];
+    for (var i=0; i < rulesSet.length; i++) {
+        var rule = inputHelper.splitEachRule(rulesSet[i]);
+        if (rule[string.RULE_URL_POS] === string.RULE_ANY_URL) {
+            if (isLessURL) { rule.splice(string.RULE_URL_POS, 1); }
+            globalRulesSet.push(rule.join(" "));
+        } else if (rulesSet[i].startsWith(string.RULE_COMMENTED))
+            continue;
+        else
+            break;
+    }
+
+    return globalRulesSet;
+}
+
 
 rulesSetHelper.editBasedOnUserPref = function(requestHeader, pos, visitUrl, packetUrl, rulePrefType, stringForBlock, stringForAllow) {
     var newHeader = requestHeader;

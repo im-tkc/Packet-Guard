@@ -1,7 +1,7 @@
-var removeToListButtonId = "removeToList";
-var addToListButtonId = "addToList";
 var urlToExclude = "";
 var imageCommitId = "img-isCommitted";
+var imageOpenOptionsId = "img-openOptions";
+var imageRefreshId = "img-refresh";
 
 main();
 
@@ -19,6 +19,16 @@ function main() {
 
         generateURLOptions(visitUrl);
         generateFields(visitUrl, isInternalUrl); 
+    });
+
+    document.querySelector("#" + imageOpenOptionsId).addEventListener('click', function() {
+        chrome.runtime.openOptionsPage();
+    });
+
+    document.querySelector("#" + imageRefreshId).addEventListener('click', function() {
+        chrome.tabs.query({active: true, currentWindow: true}, function (arrayOfTabs) {
+            chrome.tabs.reload(arrayOfTabs[0].id);
+        });
     });
 }
 

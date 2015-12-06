@@ -6,6 +6,7 @@ string.RULE_USER_PREF_POS = 2;
 string.RULE_WHICH_PARTY_POS = 3;
 string.RULE_LENGTH = 4;
 string.RULE_ANY_URL = "*";
+string.RULE_COMMENTED = "#";
 string.HTTP_IF_NONE_MATCH = "If-None-Match"; //rule for etag
 string.USER_AGENT_GENERIC_CHROME = "Mozilla/5.0 AppleWebKit (KHTML, like Gecko) Chrome Safari";
 string.INTERNAL_URL = new RegExp("^(chrome(|-extension)|opera)://.*$");

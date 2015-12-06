@@ -23,6 +23,7 @@ function saveRule() {
         rulesSet = removeOldRule(rulesSet, supportedTypes, url, selectedParty);
         rulesSet = addNewRule(rulesSet, supportedTypes, url, selectedParty);
 
+        rulesSet = rulesSetHelper.compactRulesSet(rulesSet);
         rulesSet = rulesSetHelper.sortBasedOnUrl(rulesSet);
         rulesSet = rulesSetHelper.removeDuplicateRulesSet(rulesSet);
         resources.setRulesSet(rulesSet);
@@ -64,8 +65,10 @@ function addNewRule(rulesSet, supportedTypes, url, selectedParty){
         var prefType = inputHelper.capitalizeFirstXLetters(supportedTypes[i], 1);
         var userPref = $('input[name="radio-'+ prefType +'"]:checked').val();
 
-        var rule = [url, supportedTypes[i], userPref, selectedParty].join(" ");
-        if (rule != "" ) { rulesSet.push(rule); }
+        var rule = (supportedTypes[i] === string.getCookie()) 
+                    ? [url, supportedTypes[i], userPref].join(" ")
+                    : [url, supportedTypes[i], userPref, selectedParty].join(" ");
+        rulesSet.push(rule);
     }
 
     return rulesSet;
