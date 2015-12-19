@@ -20,9 +20,10 @@ function saveRule() {
         var url = urlAndSelectedPartyLabel.innerHTML.split(" - ")[0]
         var selectedParty = urlAndSelectedPartyLabel.innerHTML.split(" - ")[1];
 
-        rulesSet = removeOldRule(rulesSet, supportedTypes, url, selectedParty);
+        rulesSet = updateOldRule(rulesSet, supportedTypes, url, selectedParty);
         rulesSet = addNewRule(rulesSet, supportedTypes, url, selectedParty);
 
+        rulesSet = rulesSetHelper.updateUserPref(rulesSet);
         rulesSet = rulesSetHelper.compactRulesSet(rulesSet);
         rulesSet = rulesSetHelper.sortBasedOnUrl(rulesSet);
         rulesSet = rulesSetHelper.removeDuplicateRulesSet(rulesSet);
@@ -32,7 +33,7 @@ function saveRule() {
     }
 }
 
-function removeOldRule(rulesSet, supportedTypes, url, selectedParty) {
+function updateOldRule(rulesSet, supportedTypes, url, selectedParty) {
     for (var i=0; i < rulesSet.length; i++) {
         if (!rulesSet[i].startsWith(url)) { continue; }
 
@@ -45,14 +46,27 @@ function removeOldRule(rulesSet, supportedTypes, url, selectedParty) {
                 && (rulesSet[i].startsWith([url, supportedTypes[j]].join(" "))));
             var isSelectedFirstParty = (selectedParty === string.getFirstParty() 
                 && (rulesSet[i].startsWith([url, supportedTypes[j]].join(" ")) 
-                    && (isFirstPartyRule || isAllPartiesRule)));
+                    && isFirstPartyRule));
             var isSelectedThirdParty = (selectedParty === string.getThirdParty() 
                 && (rulesSet[i].startsWith([url, supportedTypes[j]].join(" ")) 
-                    && (isThirdPartyRule || isAllPartiesRule)));
+                    && isThirdPartyRule));
 
-            if (isSelectedAllParty || isSelectedFirstParty || isSelectedThirdParty) {
+            var isSelectedFirstPartyButAllPartiesRule = (selectedParty === string.getFirstParty() 
+                && (rulesSet[i].startsWith([url, supportedTypes[j]].join(" ")) 
+                    && isAllPartiesRule));
+            var isSelectedThirdPartyButAllPartiesRule = (selectedParty === string.getThirdParty() 
+                && (rulesSet[i].startsWith([url, supportedTypes[j]].join(" ")) 
+                    && isAllPartiesRule));
+
+            var prefType = inputHelper.capitalizeFirstXLetters(supportedTypes[j], 1);
+            var userPref = $('input[name="radio-'+ prefType +'"]:checked').val();
+            if ((isSelectedAllParty || isSelectedFirstParty || isSelectedThirdParty) && userPref != undefined) {
                 rulesSet.splice(i, 1);
                 --i;
+            } else if ((isSelectedFirstPartyButAllPartiesRule || isSelectedThirdPartyButAllPartiesRule) && userPref != undefined) {
+                var rule = inputHelper.splitEachRule(rulesSet[i]);
+                rule[string.RULE_WHICH_PARTY_POS] = (isSelectedFirstPartyButAllPartiesRule) ? string.getThirdParty() : string.getFirstParty();
+                rulesSet[i] = rule.join(" ");
             }
         }
     }
@@ -65,10 +79,12 @@ function addNewRule(rulesSet, supportedTypes, url, selectedParty){
         var prefType = inputHelper.capitalizeFirstXLetters(supportedTypes[i], 1);
         var userPref = $('input[name="radio-'+ prefType +'"]:checked').val();
 
-        var rule = (supportedTypes[i] === string.getCookie()) 
-                    ? [url, supportedTypes[i], userPref].join(" ")
-                    : [url, supportedTypes[i], userPref, selectedParty].join(" ");
-        rulesSet.push(rule);
+        if (userPref != undefined) {
+            var rule = (supportedTypes[i] === string.getCookie()) 
+                        ? [url, supportedTypes[i], userPref].join(" ")
+                        : [url, supportedTypes[i], userPref, selectedParty].join(" ");
+            rulesSet.push(rule);
+        }
     }
 
     return rulesSet;

@@ -89,7 +89,8 @@ function generateLabelColumn(prefType, row) {
 function generateOptionsColumn(prefType, row, supportedOptions, idx) {
     var data2 = row.insertCell(-1);
     for (var j=0; j < supportedOptions[idx].length; j++) {
-        if (supportedOptions[idx][j].toString() !== string.getUserAgentCustom().toString()) {
+        if (supportedOptions[idx][j].toString() !== string.getUserAgentCustom().toString() ||
+            supportedOptions[idx][j].toString() !== string.getRefererCustom().toString()) {
             var userPref = inputHelper.capitalizeFirstXLetters(supportedOptions[idx][j], 1);
             var input = document.createElement("input");
             input.id = "radio-" + prefType + "-" + userPref;
@@ -169,9 +170,9 @@ function checkRadioBasedOnRule(visitUrl, supportedTypes) {
             $('input#radio-' + supportedTypes[i] + "-" + userPref).iCheck('check');
         }
 
-        if ((isAllPartiesUserPrefSame || isFirstPartiesUserPref) && !string.getUserAgentCustom().test(userPref)) {
+        if ((isAllPartiesUserPrefSame || isFirstPartiesUserPref) && !string.getUserAgentCustom().test(ruleObject.firstPartyUserPref)) {
             $('input#radio-' + supportedTypes[i] + "-" + ruleObject.firstPartyUserPref).iCheck('check');
-        } else if (isThirdPartiesUserPref && !string.getUserAgentCustom().test(userPref)) {
+        } else if (isThirdPartiesUserPref && !string.getUserAgentCustom().test(ruleObject.thirdPartyUserPref)) {
             $('input#radio-' + supportedTypes[i] + "-" + ruleObject.thirdPartyUserPref).iCheck('check');
         }
     }

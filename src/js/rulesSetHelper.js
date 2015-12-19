@@ -151,15 +151,15 @@ rulesSetHelper.updateUserPref = function(rulesSet) {
 
 rulesSetHelper.changeToAllPartiesIfSameUserPref = function(searchResult, newRule, newRulePos, rulesSet) {
     var oldRule = inputHelper.splitEachRule(searchResult);
-    var ALL_PARTY_POS = 2;
+    var ALL_PARTY_POS = string.getSupportedParties().indexOf(string.getAllParties());
     var isSameUserPref = newRule[string.RULE_USER_PREF_POS] == oldRule[string.RULE_USER_PREF_POS];
     var isDiffParty = string.getSupportedParties().indexOf(newRule[string.RULE_WHICH_PARTY_POS]) != ALL_PARTY_POS 
                         && string.getSupportedParties().indexOf(oldRule[string.RULE_WHICH_PARTY_POS]) != ALL_PARTY_POS;
 
     if (isSameUserPref && isDiffParty) {
-        var posInRuleSet = rulesSet.indexOf(newRule.join(" "));
+        var posInRulesSet = rulesSet.indexOf(newRule.join(" "));
         newRule[string.RULE_WHICH_PARTY_POS] = string.getAllParties();
-        rulesSet[posInRuleSet] = newRule.join(" ");
+        rulesSet[posInRulesSet] = newRule.join(" ");
     }
 
     return rulesSet;
@@ -173,10 +173,13 @@ rulesSetHelper.compactRulesSet = function(rulesSet) {
     for (var i = 0; i < globalRulesSetLessURL.length; i++) {
         rulesSetLessGlobal = rulesSetLessGlobal.filter(function(value, index, self) {
             var rule = inputHelper.splitEachRule(value);
-            if ((rule[string.RULE_URL_POS] === string.RULE_ANY_URL) || value.startsWith(string.RULE_COMMENTED))
+            if (rule[string.RULE_URL_POS] === string.RULE_ANY_URL)
                 return false; 
-            else
-                return !inputHelper.endsWith(value, globalRulesSetLessURL[i]);
+            else if (value.startsWith(string.RULE_COMMENTED))
+                return true; 
+            else {
+                return rulesSetHelper.removeIfGlobalRuleMatchesPerSiteRule(globalRulesSetLessURL[i], value);
+            }
         });
     }
 
@@ -198,6 +201,18 @@ rulesSetHelper.getGlobalRulesSet = function(rulesSet, isLessURL) {
     }
 
     return globalRulesSet;
+}
+
+rulesSetHelper.removeIfGlobalRuleMatchesPerSiteRule = function(globalRuleLessURL, ruleLessGlobal) {
+    var rule = inputHelper.splitEachRule(globalRuleLessURL);
+    var ruleSubterm = globalRuleLessURL;
+    var RULE_WHICH_PARTY_POS_LESS_URL = string.RULE_WHICH_PARTY_POS - 1
+    if (rule[RULE_WHICH_PARTY_POS_LESS_URL] == string.getAllParties()) {
+        rule.splice(RULE_WHICH_PARTY_POS_LESS_URL, 1);
+        ruleSubterm = rule.join(" ");
+    }
+
+    return ruleLessGlobal.indexOf(ruleSubterm) == -1;
 }
 
 
