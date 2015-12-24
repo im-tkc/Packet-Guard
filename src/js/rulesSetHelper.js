@@ -7,9 +7,9 @@ rulesSetHelper.formatRuleSet = function(rulesSet) {
     var isGlobalRulesSet = rulesSetHelper.checkIfGlobalRuleExist(rulesSet);
     rulesSet = rulesSetHelper.addNeccessaryGlobalRule(isGlobalRulesSet, rulesSet);
     rulesSet = rulesSetHelper.updateUserPref(rulesSet);
-    rulesSet = rulesSetHelper.compactRulesSet(rulesSet);
     rulesSet = rulesSetHelper.sortBasedOnUrl(rulesSet);
     rulesSet = rulesSetHelper.removeDuplicateRulesSet(rulesSet);
+    rulesSet = rulesSetHelper.compactRulesSet(rulesSet);
     
     return rulesSet;
 };
@@ -98,8 +98,12 @@ rulesSetHelper.addNeccessaryGlobalRule = function(isGlobalRulesSet, rulesSetArra
 
     while (isGlobalRulesSet.indexOf(false) != -1) {
         var idx = isGlobalRulesSet.indexOf(false);
-        var rule = [string.RULE_ANY_URL, supportedTypes[idx], string.DEFAULT_USER_PREF[idx], string.getAllParties()].join(" ");
-        rulesSetArray.push(rule);
+        var genericRule = [string.RULE_ANY_URL, supportedTypes[idx], string.DEFAULT_USER_PREF[idx], string.getAllParties()];
+        var rule = (supportedTypes[idx] == string.getCookie()) 
+                    ? genericRule.slice(0, genericRule.length - 1) 
+                    : genericRule;
+
+        rulesSetArray.push(rule.join(" "));
         isGlobalRulesSet[idx] = true;
     }
 

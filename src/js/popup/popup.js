@@ -2,6 +2,8 @@ var urlToExclude = "";
 var imageCommitId = "img-isCommitted";
 var imageOpenOptionsId = "img-openOptions";
 var imageRefreshId = "img-refresh";
+var imageDonateId = "img-donate";
+var imageRateId = "img-rate";
 
 main();
 
@@ -21,6 +23,10 @@ function main() {
         generateFields(visitUrl, isInternalUrl); 
     });
 
+    generateAllButtonActionLessCommitButton();
+}
+
+function generateAllButtonActionLessCommitButton() {
     document.querySelector("#" + imageOpenOptionsId).addEventListener('click', function() {
         chrome.runtime.openOptionsPage();
     });
@@ -29,6 +35,14 @@ function main() {
         chrome.tabs.query({active: true, currentWindow: true}, function (arrayOfTabs) {
             chrome.tabs.reload(arrayOfTabs[0].id);
         });
+    });
+
+    document.querySelector("#" + imageDonateId).addEventListener('click', function() {
+        chrome.tabs.create({url: "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TP4ADQC438224"});
+    });
+
+    document.querySelector("#" + imageRateId).addEventListener('click', function() {
+        chrome.tabs.create({url: "https://addons.opera.com/en/extensions/details/packet-guard/"});
     });
 }
 

@@ -98,16 +98,20 @@ function uploadFiles(evt) {
                 var promptMsg = "Are you sure you want to override existing data with imported data? "
                             + "The extension will restart after you have selected 'OK'.";
 
-                $.Zebra_Dialog(promptMsg, {
-                    'type':     'question',
-                    'title':    'Overwritting existing data?',
-                    'buttons':  [
-                                    {caption: 'Yes', callback: function() {
-                                        overrideData(isValid, clearCacheMins, clearCacheOnExit, rulesSet)
-                                    }},
-                                    {caption: 'No', callback: function() {}},
-                                ]
-                });
+                if (isValid) {
+                    $.Zebra_Dialog(promptMsg, {
+                        'type':     'question',
+                        'title':    'Overwritting existing data?',
+                        'buttons':  [
+                                        {caption: 'Yes', callback: function() {
+                                            overrideData(isValid, clearCacheMins, clearCacheOnExit, rulesSet)
+                                        }},
+                                        {caption: 'No', callback: function() {}},
+                                    ]
+                    });
+                } else {
+                    throw "Invalid file";
+                }
             } catch (e) {
                 visualFeedback("error", "This is not a valid backup file. Please try again.");
             }
@@ -119,14 +123,12 @@ function uploadFiles(evt) {
 }
 
 function overrideData(isValid, clearCacheMins, clearCacheOnExit, rulesSet) {
-    if (isValid) {
-        resources.setClearCacheMins(clearCacheMins);
-        resources.setClearCacheOnExit(clearCacheOnExit);
-        resources.setRulesSet(rulesSet);
+    resources.setClearCacheMins(clearCacheMins);
+    resources.setClearCacheOnExit(clearCacheOnExit);
+    resources.setRulesSet(rulesSet);
 
-        chrome.runtime.reload();
-        window.close();
-    }
+    chrome.runtime.reload();
+    window.close();
 }
 
 function exportSettings() {
