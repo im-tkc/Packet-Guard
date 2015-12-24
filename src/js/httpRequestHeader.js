@@ -6,7 +6,9 @@ hRequestHeader.bindListener = function () {
         var newHeader = details.requestHeaders;
         var tab = tabsRecorder.getTab(details.tabId);
         var packetUrl = inputHelper.getDomainOnly(details.url);
-        var tabUrl = inputHelper.getDomainOnly(tab.url);
+
+        var isFirstPacket = (details.parentFrameId == -1)? true : false;
+        var tabUrl = isFirstPacket ? inputHelper.getDomainOnly(packetUrl) : inputHelper.getDomainOnly(tab.url);
 
         for (var i = 0; i < details.requestHeaders.length; ++i) {
             newHeader = hReferer.performHTTPRefererModification(newHeader, i, tabUrl, packetUrl);
