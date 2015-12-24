@@ -22,7 +22,9 @@ resources.setClearCacheOnExit = function(value) {
 };
 
 resources.getRulesSet = function() {
-    return localStorage[rulesSetName].split(",");
+    return (localStorage[rulesSetName] !== undefined) 
+        ? localStorage[rulesSetName].split(",")
+        : [];
 };
 
 resources.setRulesSet = function(value) {

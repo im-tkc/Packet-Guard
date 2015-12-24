@@ -22,9 +22,13 @@ rulesSetHelper.sanitizeRulesSet = function(rulesSetArray) {
 
         var ruleComponents = inputHelper.splitEachRule(array[i]);
         var isValidRuleLength = ruleComponents.length == string.RULE_LENGTH;
-        var isCookieRule = (ruleComponents[string.RULE_PREF_TYPE_POS].indexOf(string.getCookie()) == 0) 
-            && (ruleComponents.length == string.RULE_LENGTH - 1);
-        if (array[i] && !(isValidRuleLength || isCookieRule)) { array.splice(i, 1); --i; continue; }
+        var isCookieRule = ruleComponents[string.RULE_PREF_TYPE_POS].indexOf(string.getCookie()) == 0
+        
+        if (isCookieRule && (string.getSupportedParties().indexOf(ruleComponents[string.RULE_WHICH_PARTY_POS]) != -1)) {
+            ruleComponents.splice(string.RULE_WHICH_PARTY_POS, 1);
+        } else if (array[i] && !(isValidRuleLength || isCookieRule)) { 
+            array.splice(i, 1); --i; continue; 
+        }
         
         var isValidRule = [false, false, false];
         var url = ruleComponents[string.RULE_URL_POS];
@@ -39,7 +43,6 @@ rulesSetHelper.sanitizeRulesSet = function(rulesSetArray) {
 
         isValidRule[1] = this.validateUserOptionsAndType(ruleComponents);
         isValidRule[2] = this.validateWhichParty(isCookieRule, isValidRuleLength, ruleComponents);
-        
 
         if (isValidRule.indexOf(false) != -1) { array.splice(i, 1); --i;}
     }
@@ -244,9 +247,9 @@ rulesSetHelper.editBasedOnUserPref = function(requestHeader, pos, visitUrl, pack
     }
 
     if (rulePrefType.localeCompare(string.getUserAgent()) == 0)
-        userAgent.configureUserAgent(myRuleObject, rulePrefType, newHeader, visitUrl, packetUrl, pos);
+        newHeader = userAgent.configureUserAgent(myRuleObject, rulePrefType, newHeader, visitUrl, packetUrl, pos);
     else if (rulePrefType.localeCompare(string.getReferer()) == 0)
-        hReferer.configureReferer(myRuleObject, rulePrefType, newHeader, visitUrl, packetUrl, pos);
+        newHeader = hReferer.configureReferer(myRuleObject, rulePrefType, newHeader, visitUrl, packetUrl, pos);
 
     return newHeader;
 };

@@ -10,15 +10,15 @@ main();
 function main() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         var activeUrl = tabs[0].url;
-    
-        var visitUrl = inputHelper.getDomainOnly(activeUrl);
+
         var isOpera = (navigator.userAgent.indexOf("OPR") != -1);
         var isWebstore = ((activeUrl.startsWith(string.CHROME_WEBSTORE) && !isOpera)
             || (activeUrl.startsWith(string.OPERA_WEBSTORE) && isOpera));
         var isInternalUrl = (isWebstore || string.INTERNAL_URL.test(activeUrl))
                             ? true
                             : false;
-
+                            
+        var visitUrl = (isInternalUrl) ? "protected-page" : inputHelper.getDomainOnly(activeUrl);
         generateURLOptions(visitUrl);
         generateFields(visitUrl, isInternalUrl); 
     });

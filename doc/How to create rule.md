@@ -1,8 +1,8 @@
 # Default Packet Guard rule
- - Allow user-agent (user-agent field will be left untouched)
- - Block etag (etag field will be suppressed)
+ - Allow user-agent for all parties (user-agent field will be left untouched)
+ - Block etag for all parties  (etag field will be suppressed)
  - Clear cookie (all unwanted cookie will be cleared upon closing of tabs)
- - Block referer (referer field will be suppressed)
+ - Block referer for all parties (referer field will be suppressed)
 
 # How to create rule?
 There are two ways in creating the rule. Namely the graphical method or the rule method (for advanced user).
@@ -11,6 +11,10 @@ There are two ways in creating the rule. Namely the graphical method or the rule
 To do so, click on the extension icon located at the address bar.
 
 ![Packet Guard popup](https://raw.githubusercontent.com/im-tkc/Packet-Guard/master/doc/img/popup.png)
+
+Select the intended party that you want to limit the information to be sent. **NOTE: Cookie rule is not supported to filter based intended party. Cookie rule will be [explained further in later section of this page](https://github.com/im-tkc/Packet-Guard/wiki/How-to-create-a-rule%3F#wait-what-does-each-individual-preference-means).**
+
+![Packet Guard select party to filter](https://raw.githubusercontent.com/im-tkc/Packet-Guard/master/doc/img/popup-select-party.png)
 
 Check the desired rule.
 
@@ -32,10 +36,11 @@ Done!
 # What is the syntax of the rule?
 The syntax of the rule is as follows:
 
-|            | URL                    | Option                           | Preference                                                                                                                                           |
-|------------|------------------------|----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-|**Meaning** |The page that you visit.|Available fields to be edited.    |Available preference to be edited.                                                                                                                    |
-|**Example** |www.facebook.com        |etag, referer, cookie, user-agent.|**etag** - Allow, Block <br> **referer** - block, allow, domain-only <br> **cookie** - clean, keep <br> **user-agent** - generic, allow, block, custom|
+|            | URL                    | Option                           | Preference                                                                                                                                           | Party      |
+|------------|------------------------|----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------|
+|**Meaning** |The page that you visit.|Available fields to be edited.    |Available preference to be edited.                                                                                                                    |The intended party that you want to modify the information |
+|**Example** |www.facebook.com        |etag, referer, cookie, user-agent.|**etag** - Allow, Block <br> **referer** - block, allow, domain-only, custom <br> **cookie\*** - clean, keep <br> **user-agent** - generic, allow, block, custom| 1st, 3rd, all |
+\*Party rule is _**not applicable**_ for cookie preference
 
 ## Wait! What does each individual preference means?
  - **Allow** - The targeted field will be left untouched.
@@ -43,7 +48,7 @@ The syntax of the rule is as follows:
  - **Domain-only (for referer)** - This means that the "Referer" field will only send domain information only. For example, the packet will send "http://www.google.com" instead of "http://google.com/q=what+is+my+previous+page".
  - **Clean (for cookie)** - This cookie *will not be marked* as "protected" when the tab is closed. For example, if "facebook.com" is set as "clean" for cookie, cookie that is related to "facebook.com" will be deleted when a tab is closed. However, it will be *implicitly "keep"* if "facebook.com" tab is not closed. This means that if "facebook.com" tab is opened while some other tab is closed, Packet Guard will not clear "facebook.com" cookies.
  - **Keep (for cookie)** - This cookie *will be marked* as "protected" when the tab is closed. For example, if "facebook.com" is set as "keep", cookie that is related to "facebook.com" will not be deleted when the tab is closed. This means that if "facebook.com" tab is closed, Packet Guard will not clear "facebook.com" cookies.
- - **Custom (for user-agent)** - The targeted field will be changed based on the user desired string. It can set by quoting the preference field. For example:
+ - **Custom (for user-agent and referer)** - The targeted field will be changed based on the user desired string. It can set by quoting the preference field. For example:
 
     `edition.cnn.com user-agent "firefox"`
     

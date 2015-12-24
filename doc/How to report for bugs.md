@@ -6,6 +6,6 @@ In order for me to fix the issue quickly, please include the following:
 
  - Version of the extension
  - Steps to replicate the issue
- - What is the intended output?
+ - What is the actual output?
  - What should be the output?
  - Label the issue as `bug`

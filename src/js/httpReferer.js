@@ -10,7 +10,7 @@ hReferer.performHTTPRefererModification = function(requestHeaders, pos, tabUrl, 
         var refererAllow = string.getRefererAllow();
         newHeader = rulesSetHelper.editBasedOnUserPref(requestHeaders, pos, tabUrl, packetUrl, REFERER, refererBlock, refererAllow);
     }
-
+    
     return newHeader;
 };
 
