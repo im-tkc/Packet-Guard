@@ -104,7 +104,7 @@ function uploadFiles(evt) {
                         'title':    'Overwritting existing data?',
                         'buttons':  [
                                         {caption: 'Yes', callback: function() {
-                                            overrideData(isValid, clearCacheMins, clearCacheOnExit, rulesSet)
+                                            overrideData(clearCacheMins, clearCacheOnExit, rulesSet)
                                         }},
                                         {caption: 'No', callback: function() {}},
                                     ]
@@ -122,11 +122,11 @@ function uploadFiles(evt) {
     }
 }
 
-function overrideData(isValid, clearCacheMins, clearCacheOnExit, rulesSet) {
+function overrideData(clearCacheMins, clearCacheOnExit, rulesSet) {
     resources.setClearCacheMins(clearCacheMins);
     resources.setClearCacheOnExit(clearCacheOnExit);
     resources.setRulesSet(rulesSet);
-
+    
     chrome.runtime.reload();
     window.close();
 }

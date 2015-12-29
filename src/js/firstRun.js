@@ -1,11 +1,12 @@
 chrome.runtime.onInstalled.addListener(function(details) {
-    var rulesSet = [];
+    var rulesSet = resources.getRulesSet();
+
     if(details.reason == "install") { initialConfiguration(); }
-    else if (details.reason == "update" && details.previousVersion == "0.5") { 
+    else if (details.reason == "update" && (details.previousVersion == "0.5" || details.previousVersion == "0.6")) { 
         rulesSet = updateRulesSetWithPartySupport();
     }
     
-    checkAndUpdateGlobalRule(rulesSet);  
+    checkAndUpdateGlobalRule(rulesSet);
     chrome.tabs.create({url: "https://github.com/im-tkc/Packet-Guard#packet-guard"});
 });
 
