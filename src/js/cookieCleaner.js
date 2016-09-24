@@ -116,6 +116,7 @@ CCleaner.removeSiteData = function() {
         "indexedDB": true,
         "localStorage": true,
         "pluginData": true,
+        "serviceWorkers": true,
         "webSQL": true
     });
 };

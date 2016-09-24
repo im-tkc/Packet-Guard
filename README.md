@@ -9,7 +9,7 @@ With Packet Guard, you can now (on per-site basis):
 - Keep or clear unused cookies when the tab is closed
 - Block, allow, use of custom or generic user agent
 
-From v0.6, you can now filter further down to on per-party basis!
+From v0.6, you can now control based on per-party basis!
 
 ### Additional features:
 - Clear cache on regular interval

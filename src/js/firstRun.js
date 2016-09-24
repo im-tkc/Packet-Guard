@@ -6,8 +6,8 @@ chrome.runtime.onInstalled.addListener(function(details) {
         rulesSet = updateRulesSetWithPartySupport();
     }
     
+    showWebpage(details);
     checkAndUpdateGlobalRule(rulesSet);
-    chrome.tabs.create({url: "https://github.com/im-tkc/Packet-Guard#packet-guard"});
 });
 
 function initialConfiguration() {
@@ -24,6 +24,13 @@ function updateRulesSetWithPartySupport() {
     };
 
     return rulesSet;
+}
+
+function showWebpage(details) {
+    var isExtensionUpdated = details.previousVersion != "0.6.2";
+    if (details.reason == "install" || details.reason == "update" && isExtensionUpdated) {
+        chrome.tabs.create({url: "https://github.com/im-tkc/Packet-Guard#packet-guard"});
+    }
 }
 
 function checkAndUpdateGlobalRule(rulesSet) {
